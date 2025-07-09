@@ -1,9 +1,22 @@
 
 import 'package:ev_point/app.dart';
+import 'package:ev_point/controllers/onboard_provider.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main(){
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => OnboardProvider(),
+          
+        )
+      ],
+      child: MyApp(),
+    )
+    );
 }
 
 // class MyApp extends StatelessWidget {
