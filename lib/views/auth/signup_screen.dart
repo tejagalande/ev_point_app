@@ -1,9 +1,13 @@
+import 'package:ev_point/controllers/signup_provider.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:ev_point/views/auth/otp_screen.dart';
 import 'package:ev_point/widgets/custom_button.dart';
+import 'package:ev_point/widgets/dialogbox/custom_dialogbox.dart';
+import 'package:ev_point/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_input/phone_input_package.dart';
+import 'package:provider/provider.dart';
 
 import '../../utils/theme/app_color.dart';
 import '../../widgets/back_arrow.dart';
@@ -14,6 +18,9 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
+    final signUpProvider = context.watch<SignupProvider>();
+    String mobileNumber = "";
+    // final phoneController = PhoneController(PhoneNumber.parse("0"));
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: AppBar(
@@ -67,6 +74,11 @@ class SignupScreen extends StatelessWidget {
                 enabled: true,
 
                 onSubmitted: (value) {
+                  // mobileNumber variable gets the value when the user has to press enter key on the keyboard
+                  mobileNumber = value.trim();
+                  debugPrint("mobile: $value");
+                },
+                onChanged: (value) {
                   
                 },
               ),
@@ -74,10 +86,12 @@ class SignupScreen extends StatelessWidget {
               Row(
                 children: [
                   Checkbox(
-                    value: false,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                    onChanged: (value){
+                    value: signUpProvider.userAggreed,
+                    activeColor: AppColor.primary_900,
 
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6), ),
+                    onChanged: (_){
+                      signUpProvider.doAgree();
                   }),
                   Expanded(
                     child: RichText(
@@ -118,11 +132,18 @@ class SignupScreen extends StatelessWidget {
                     Divider(thickness: 0.5,),
                     CustomButton(
                       onTapCallback: () {
-                        Navigator.push(context, MaterialPageRoute(builder:(context) => OtpScreen(countryCode: "+91", phoneNumber: "7720830178",),),);
+                         debugPrint("user agree: ${signUpProvider.userAggreed} and mobile number: $mobileNumber");
+                        if( mobileNumber.isNotEmpty && signUpProvider.userAggreed ){
+                         
+                          Navigator.push(context, MaterialPageRoute(builder:(context) => OtpScreen(countryCode: "+91", phoneNumber: mobileNumber,),),);
+
+                          
+                        }
+                        
                       },
                       margin: EdgeInsets.only(bottom: 10),
                           title: Constants.continu,
-                         buttonColor: AppColor.primary_900,
+                         buttonColor: signUpProvider.userAggreed ? AppColor.primary_900 : AppColor.buttonDisabled,
                          textColor: AppColor.white,
                          borderRadius: 30,
                          boldText: true, 

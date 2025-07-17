@@ -118,93 +118,194 @@
 // }
 
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
-void main() => runApp(MaterialApp(home: OTPPage()));
+// void main() => runApp(MaterialApp(home: OTPPage()));
 
-class OTPPage extends StatefulWidget {
-  @override
-  State<OTPPage> createState() => _OTPPageState();
-}
+// class OTPPage extends StatefulWidget {
+//   @override
+//   State<OTPPage> createState() => _OTPPageState();
+// }
 
-class _OTPPageState extends State<OTPPage> {
-  final int _otpLength = 6;
+// class _OTPPageState extends State<OTPPage> {
+//   final int _otpLength = 6;
 
-  late List<TextEditingController> _controllers;
-  late List<FocusNode> _focusNodes;
+//   late List<TextEditingController> _controllers;
+//   late List<FocusNode> _focusNodes;
 
-  @override
-  void initState() {
-    super.initState();
-    _controllers = List.generate(_otpLength, (_) => TextEditingController());
-    _focusNodes = List.generate(_otpLength, (_) => FocusNode());
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controllers = List.generate(_otpLength, (_) => TextEditingController());
+//     _focusNodes = List.generate(_otpLength, (_) => FocusNode());
+//   }
 
-  @override
-  void dispose() {
-    _controllers.forEach((c) => c.dispose());
-    _focusNodes.forEach((f) => f.dispose());
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controllers.forEach((c) => c.dispose());
+//     _focusNodes.forEach((f) => f.dispose());
+//     super.dispose();
+//   }
 
-  void _onChanged(String value, int index) {
-    if (value.length == 1) {
-      if (index + 1 < _otpLength) {
-        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-      } else {
-        FocusScope.of(context).unfocus(); // All done
-      }
-    }
-  }
+//   void _onChanged(String value, int index) {
+//     if (value.length == 1) {
+//       if (index + 1 < _otpLength) {
+//         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+//       } else {
+//         FocusScope.of(context).unfocus(); // All done
+//       }
+//     }
+//   }
 
-  void _onKey(RawKeyEvent event, int index) {
-    if (event is RawKeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace) {
-      if (_controllers[index].text.isEmpty && index > 0) {
-        FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
-        _controllers[index - 1].clear();
-      }
-    }
-  }
+//   void _onKey(RawKeyEvent event, int index) {
+//     if (event is RawKeyDownEvent &&
+//         event.logicalKey == LogicalKeyboardKey.backspace) {
+//       if (_controllers[index].text.isEmpty && index > 0) {
+//         FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+//         _controllers[index - 1].clear();
+//       }
+//     }
+//   }
 
-  Widget _buildOtpField(int index) {
-    return SizedBox(
-      width: 50,
-      child: RawKeyboardListener(
-        focusNode: FocusNode(), // A dummy node for RawKeyboardListener
-        onKey: (event) => _onKey(event, index),
-        child: TextField(
-          controller: _controllers[index],
-          focusNode: _focusNodes[index],
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          maxLength: 1,
-          style: TextStyle(fontSize: 24),
-          decoration: InputDecoration(counterText: ''),
-          onChanged: (value) => _onChanged(value, index),
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
-      ),
-    );
-  }
+//   Widget _buildOtpField(int index) {
+//     return SizedBox(
+//       width: 50,
+//       child: RawKeyboardListener(
+//         focusNode: FocusNode(), // A dummy node for RawKeyboardListener
+//         onKey: (event) => _onKey(event, index),
+//         child: TextField(
+//           controller: _controllers[index],
+//           focusNode: _focusNodes[index],
+//           keyboardType: TextInputType.number,
+//           textAlign: TextAlign.center,
+//           maxLength: 1,
+//           style: TextStyle(fontSize: 24),
+//           decoration: InputDecoration(counterText: ''),
+//           onChanged: (value) => _onChanged(value, index),
+//           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+//         ),
+//       ),
+//     );
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Enter OTP')),
-      body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(_otpLength, (index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _buildOtpField(index),
-            );
-          }),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Enter OTP')),
+//       body: Center(
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: List.generate(_otpLength, (index) {
+//             return Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: _buildOtpField(index),
+//             );
+//           }),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'dart:io' show Platform;
+
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   // Android settings
+//   const AndroidInitializationSettings initializationSettingsAndroid =
+//       AndroidInitializationSettings('@mipmap/ic_launcher');
+
+//   // iOS settings (optional)
+//   final DarwinInitializationSettings initializationSettingsDarwin =
+//       DarwinInitializationSettings();
+
+//   // Initialize settings
+//   final InitializationSettings initializationSettings = InitializationSettings(
+//     android: initializationSettingsAndroid,
+//     iOS: initializationSettingsDarwin,
+//   );
+
+//   await flutterLocalNotificationsPlugin.initialize(
+//     initializationSettings,
+//   );
+
+//   await requestNotificationPermissions();
+
+
+//   runApp(MyApp());
+// }
+
+// Future<void> requestNotificationPermissions() async {
+//   if (Platform.isAndroid) {
+//     final androidPlugin = flutterLocalNotificationsPlugin
+//         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    
+//     final granted = await androidPlugin?.requestNotificationsPermission();
+//     print('Android notification permission granted: $granted');
+//   }
+
+//   if (Platform.isIOS) {
+//     final iosPlugin = flutterLocalNotificationsPlugin
+//         .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    
+//     final granted = await iosPlugin?.requestPermissions(
+//       alert: true,
+//       badge: true,
+//       sound: true,
+//     );
+//     print('iOS notification permission granted: $granted');
+//   }
+// }
+
+
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Local Notification Demo',
+//       home: Scaffold(
+//         appBar: AppBar(title: Text('Local Notification')),
+//         body: Center(
+//           child: ElevatedButton(
+//             onPressed: () async {
+//               await showSimpleNotification();
+//             },
+//             child: Text('Show Notification'),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Future<void> showSimpleNotification() async {
+//     const AndroidNotificationDetails androidDetails =
+//         AndroidNotificationDetails(
+//       'channel_id',
+//       'channel_name',
+//       channelDescription: 'channel_description',
+//       importance: Importance.max,
+//       priority: Priority.high,
+//     );
+
+//     const NotificationDetails notificationDetails = NotificationDetails(
+//       android: androidDetails,
+//     );
+
+//     await flutterLocalNotificationsPlugin.show(
+//       0,
+//       'Hello!',
+//       'This is a local notification',
+//       notificationDetails,
+//     );
+//   }
+// }
 

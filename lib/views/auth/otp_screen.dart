@@ -1,11 +1,17 @@
 import 'dart:async';
 
+import 'package:ev_point/main.dart';
+import 'package:ev_point/services/supabase_manager.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:ev_point/widgets/back_arrow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../onboard/splash_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   String countryCode;
@@ -23,6 +29,8 @@ class _OtpScreenState extends State<OtpScreen> {
   late List<TextEditingController> _controllers;
   late List<FocusNode> _focusNodes;
   int get timerText => _seconds ;
+  int? otp;
+  String userInsertedOtp = "";
   @override
   void initState() {
     super.initState();
@@ -30,15 +38,64 @@ class _OtpScreenState extends State<OtpScreen> {
     _focusNodes = List.generate(_otpLength, (_) => FocusNode());
 
     startTimer();
+    getOtp();
+  }
+
+  Future<void> getOtp() async{
+    otp = await SupabaseManager().client.rpc("generate_otp_code").then((value) {
+      
+      startTimer();
+      showSimpleNotification(value.toString());
+      return value;
+    });
+    debugPrint("OTP code: ${otp ?? 0 }");
+  }
+
+  void verifyOtp(){
+    debugPrint("user inserted otp: $userInsertedOtp");
+    if( userInsertedOtp.compareTo(otp!.toString()) == 0){
+      debugPrint("OTP is verified.");
+      
+    }
+    else{
+      debugPrint("OTP is invalid.");
+    }
+  }
+
+  Future<void> showSimpleNotification(String otpCode) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      channelDescription: 'channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'EVPoint',
+      "Your OTP code is $otpCode",
+      notificationDetails,
+    );
   }
 
   void _onChanged(String value, int index) {
+    
     if (value.length == 1) {
       if (index + 1 < _otpLength) {
+        
         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
       } else {
         FocusScope.of(context).unfocus(); // All done
+        
       }
+      userInsertedOtp += value;
+      verifyOtp();
     }
   }
 
@@ -62,6 +119,9 @@ class _OtpScreenState extends State<OtpScreen> {
         });
       } else {
         _timer?.cancel();
+        _timer = null;
+        
+        
       }
     });
   }
@@ -84,18 +144,19 @@ class _OtpScreenState extends State<OtpScreen> {
           decoration: InputDecoration(
             counterText: '',
             filled: true,
-            fillColor: AppColor.greyScale50,
+            fillColor: _focusNodes[index].hasFocus ? AppColor.primary_900.withAlpha(40) : AppColor.greyScale50,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: AppColor.greyScale200, )
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: AppColor.greyScale200, )
+            borderSide: BorderSide(color: _focusNodes[index].hasFocus ? AppColor.primary_900 : AppColor.greyScale200, )
           )
           ),
           
           onChanged: (value) => _onChanged(value, index),
+          
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ),
@@ -110,7 +171,9 @@ class _OtpScreenState extends State<OtpScreen> {
       backgroundColor: AppColor.white,
       appBar: AppBar(
         backgroundColor: AppColor.white,
-        leading: GestureDetector(onTap: () {}, child: backArrow()),
+        leading: GestureDetector(onTap: () {
+          Navigator.pop(context);
+        }, child: backArrow()),
       ),
       body: Center(
         child: Padding(
@@ -150,10 +213,18 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
               ),
           
+
+            //  resend text
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    
+                    if(_seconds == 0){
+                        _controllers.forEach((c) => c.clear() );
+                        _seconds = 60;
+                        userInsertedOtp = "";
+                        getOtp();
+                        // _focusNodes.forEach((f) => f. );
+                    }
                   },
                   child: RichText(
                     text: TextSpan(
@@ -188,8 +259,10 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // _controllers.forEach((c) => c.dispose());
+  //   // _focusNodes.forEach((f) => f.dispose());
+  //   super.dispose();
+  // }
 }

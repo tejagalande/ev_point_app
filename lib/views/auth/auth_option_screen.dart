@@ -18,73 +18,77 @@ class _AuthOptionScreenState extends State<AuthOptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white,
-      body: Center(
-        child: Column(
-          spacing: 20,
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(height: 100,),
-            Image.asset("${Constants.imagePath}Frame.png", height: 250),
-            
-            Column(
-              spacing: 15,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 20,
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(Constants.letsYouIn, style: TextStyles.h2Bold40),
-                authOption(
-                  () {},
-                  "google_icon.png",
-                  Constants.continueWithGoogle,
-                ),
-                authOption(
-                  () {},
-                  "facebook_icon.png",
-                  Constants.continueWithFacebook,
-                ),
-                authOption(
-                  () {},
-                  "apple_icon.png",
-                  Constants.continueWithApple,
-                ),
-              ],
-            ),
-
-            Row(
-              children: [
-                Expanded(child: Divider(indent: 15,endIndent: 15, color: AppColor.greyScale200,)),
-                Text(Constants.or, style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 18, fontWeight: FontWeight.w600, color: AppColor.greyScale700)),
-                Expanded(child: Divider(indent: 15,endIndent: 15, color: AppColor.greyScale200)),  
-              ],
-            ),
-
-            CustomButton(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-              title: Constants.signInWithPhoneNumber,
-              buttonColor: AppColor.primary_900,
-              textColor: AppColor.white,
-              boldText: true,
-              borderRadius: 30,
-              isShadow: true,
-              onTapCallback: () {
+                SizedBox(height: 100,),
+                Image.asset("${Constants.imagePath}Frame.png", height: 250),
                 
-              },
-              ),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignupScreen() ),  (Route<dynamic> route) => false );
-                },
-                child: RichText(
-                  text: TextSpan(
-                    text: Constants.dontHaveAccount,
-                    style: TextStyle(color: AppColor.black, fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w500, fontSize: 16),
-                    children: [
-                      TextSpan(text: "  ${Constants.signUp}", style: TextStyle(color: AppColor.primary_900, fontWeight: FontWeight.w800, fontSize: 16))
-                    ]
-                  ),
-                  
+                Column(
+                  spacing: 15,
+                  children: [
+                    Text(Constants.letsYouIn, style: TextStyles.h2Bold40),
+                    authOption(
+                      () {},
+                      "google_icon.png",
+                      Constants.continueWithGoogle,
+                    ),
+                    authOption(
+                      () {},
+                      "facebook_icon.png",
+                      Constants.continueWithFacebook,
+                    ),
+                    authOption(
+                      () {},
+                      "apple_icon.png",
+                      Constants.continueWithApple,
+                    ),
+                  ],
                 ),
-              )
-          ],
+            
+                Row(
+                  children: [
+                    Expanded(child: Divider(indent: 15,endIndent: 15, color: AppColor.greyScale200,)),
+                    Text(Constants.or, style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 18, fontWeight: FontWeight.w600, color: AppColor.greyScale700)),
+                    Expanded(child: Divider(indent: 15,endIndent: 15, color: AppColor.greyScale200)),  
+                  ],
+                ),
+            
+                CustomButton(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                  title: Constants.signInWithPhoneNumber,
+                  buttonColor: AppColor.primary_900,
+                  textColor: AppColor.white,
+                  boldText: true,
+                  borderRadius: 30,
+                  isShadow: true,
+                  onTapCallback: () {
+                    
+                  },
+                  ),
+            
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignupScreen() ),  (Route<dynamic> route) => false );
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: Constants.dontHaveAccount,
+                        style: TextStyle(color: AppColor.black, fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w500, fontSize: 16),
+                        children: [
+                          TextSpan(text: "  ${Constants.signUp}", style: TextStyle(color: AppColor.primary_900, fontWeight: FontWeight.w800, fontSize: 16))
+                        ]
+                      ),
+                      
+                    ),
+                  )
+              ],
+            ),
+          ),
         ),
       ),
     );

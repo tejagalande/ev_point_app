@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class CustomCircularLoader extends StatefulWidget {
   @override
@@ -64,7 +66,7 @@ class _CustomCircularLoaderState extends State<CustomCircularLoader>
                         Offset offset = _getOffset(angle, radius);
                         return Positioned(
                           left: radius + offset.dx,
-                          top: radius + offset.dy,
+                          top: radius + offset.dy,  
                           child: Container(
                             width: sizes[index],
                             height: sizes[index],
