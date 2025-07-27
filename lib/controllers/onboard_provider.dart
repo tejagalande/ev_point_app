@@ -27,13 +27,15 @@ class OnboardProvider extends ChangeNotifier {
     });
   }
 
+
+
   void updatePage(int index) {
     _currentPage = index;
     notifyListeners();
   }
 
   void nextPage() {
-    if (_currentPage < 2) {
+    
       pageController
           .nextPage(
             duration: Duration(milliseconds: 300),
@@ -42,12 +44,13 @@ class OnboardProvider extends ChangeNotifier {
           .then((_) {
             _currentPage += 1;
           });
-    }
+    
   }
 
   void skipPage() {
     if (_currentPage < 3) {
       pageController.jumpToPage(2);
+      _currentPage = 3;
     }
   }
 

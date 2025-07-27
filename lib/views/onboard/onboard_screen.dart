@@ -1,4 +1,5 @@
 import 'package:ev_point/controllers/onboard_provider.dart';
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/size_config.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
@@ -53,6 +54,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
                   onboardProvider.bottomButtonRenderBox!.hasSize
               ? PageView(
                 controller: onboardProvider.pageController,
+                onPageChanged: (value) {
+                  // debugPrint("page changed $value");
+                  onboardProvider.updatePage(value);
+                },
                 children: [
                   page(
                     "${Constants.imagePath}onboard_screen1.png",
@@ -132,17 +137,12 @@ class _OnboardScreenState extends State<OnboardScreen> {
                             textColor: AppColor.white,
 
                             onTapCallback: () {
-                              if (onboardProvider.currentPage < 2) {
+                              if (onboardProvider.currentPage < 3) {
                                 onboardProvider.nextPage();
                               } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AuthOptionScreen(),
-                                  ),
-                                );
+                                Navigator.pushNamed(context, AppRoutes.signupRoute);
                               }
-                              onboardProvider.nextPage();
+                              // onboardProvider.nextPage();
 
                               debugPrint(
                                 'current page: ${onboardProvider.currentPage}',

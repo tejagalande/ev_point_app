@@ -1,8 +1,11 @@
 
 import 'package:ev_point/app.dart';
+import 'package:ev_point/controllers/onboardProfile_provider.dart';
 import 'package:ev_point/controllers/onboard_provider.dart';
+import 'package:ev_point/controllers/selfieCamera_provider.dart';
 import 'package:ev_point/controllers/signup_provider.dart';
 import 'package:ev_point/services/supabase_manager.dart';
+import 'package:ev_point/utils/shared_pref.dart';
 import 'package:ev_point/utils/size_config.dart';
 
 import 'package:flutter/material.dart';
@@ -17,8 +20,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await SupabaseManager().init();
-
-
+  await SharedPref.init();
 
  
 
@@ -31,6 +33,12 @@ void main() async{
         ),
         ChangeNotifierProvider(
           create: (_) => SignupProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => OnboardprofileProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SelfiecameraProvider(),
         )
       ],
       child: MyApp(),

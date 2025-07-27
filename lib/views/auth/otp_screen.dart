@@ -1,28 +1,32 @@
 import 'dart:async';
 
 import 'package:ev_point/main.dart';
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/services/supabase_manager.dart';
 import 'package:ev_point/utils/constants.dart';
+import 'package:ev_point/utils/shared_pref.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:ev_point/widgets/back_arrow.dart';
+import 'package:ev_point/widgets/dialogbox/custom_dialogbox.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../onboard/splash_screen.dart';
 
 class OtpScreen extends StatefulWidget {
-  String countryCode;
-  String phoneNumber;
-  OtpScreen({super.key, required this.countryCode, required this.phoneNumber});
+
+  OtpScreen({super.key,});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+
   final int _otpLength = 4;
   int _seconds = 60;
   Timer? _timer;
@@ -56,6 +60,20 @@ class _OtpScreenState extends State<OtpScreen> {
     if( userInsertedOtp.compareTo(otp!.toString()) == 0){
       debugPrint("OTP is verified.");
       
+      customDialogBox(context);
+      SharedPref().setData("userOnboard", "true").then((val){
+        debugPrint("user onboarded.. $val");
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        
+
+        Future.delayed(Duration(seconds: 1), (){
+          if(!mounted) return null; 
+          Navigator.pushNamed(context, AppRoutes.onboardProfileRoute);
+        });
+
+        
+      });
     }
     else{
       debugPrint("OTP is invalid.");
@@ -127,9 +145,11 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Widget _buildOtpField(int index) {
+    
+
     return SizedBox(
       
-      width: 50,
+      width: 50.w,
       child: RawKeyboardListener(
         focusNode: FocusNode(), // A dummy node for RawKeyboardListener
         onKey: (event) => _onKey(event, index),
@@ -146,11 +166,11 @@ class _OtpScreenState extends State<OtpScreen> {
             filled: true,
             fillColor: _focusNodes[index].hasFocus ? AppColor.primary_900.withAlpha(40) : AppColor.greyScale50,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: AppColor.greyScale200, )
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: _focusNodes[index].hasFocus ? AppColor.primary_900 : AppColor.greyScale200, )
           )
           ),
@@ -167,6 +187,8 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
     return Scaffold(
       backgroundColor: AppColor.white,
       appBar: AppBar(
@@ -177,15 +199,15 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:  15.0),
+          padding: EdgeInsets.symmetric(horizontal:  15.0.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 30,
+            spacing: 30.h,
             children: [
-              SizedBox(height: 10,),
-              Text("OTP code verification 🔐", style: TextStyles.h3Bold32),
+              SizedBox(height: 10.0.h,),
+              Text(Constants.otpCodeVerify, style: TextStyles.h3Bold32),
               Text(
-                "We have sent an OTP code to phone number ${widget.phoneNumber}. Enter the OTP code below to continue.",
+                "We have sent an OTP code to phone number ${args["phone_number"]}. Enter the OTP code below to continue.",
                 style: TextStyles.bodyXlargeRegular18,
               ),
           
@@ -194,7 +216,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(_otpLength, (index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0.r),
                       child: _buildOtpField(index),
                     );
                   }),
@@ -203,11 +225,11 @@ class _OtpScreenState extends State<OtpScreen> {
           
               Center(
                 child: Text(
-                  "Didn\'t receive otp code?",
+                  Constants.didNotReceiveOtp,
                   style: TextStyle(
                     color: AppColor.black,
                     fontFamily: Constants.urbanistFont,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -231,22 +253,22 @@ class _OtpScreenState extends State<OtpScreen> {
                       style: TextStyle(
                         color: AppColor.black,
                         fontFamily: Constants.urbanistFont,
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       children: [
-                        TextSpan(text: "You can resend code in "),
+                        TextSpan(text: Constants.youCanResendCode),
                         TextSpan(
                           style: TextStyle(
                             color: AppColor.primary_900,
                             fontFamily: Constants.urbanistFont,
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
                           ),
                           text: "$timerText",
                         ),
                         TextSpan(text: " s "),
-                        TextSpan(text: timerText > 0 ? "" : "Resend", style: TextStyle(color: AppColor.primary_900, decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: Constants.urbanistFont))
+                        TextSpan(text: timerText > 0 ? "" : Constants.reSend, style: TextStyle(color: AppColor.primary_900, decoration: TextDecoration.underline, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: Constants.urbanistFont))
                       ],
                     ),
                   ),
@@ -259,10 +281,11 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // @override
-  // void dispose() {
-  //   // _controllers.forEach((c) => c.dispose());
-  //   // _focusNodes.forEach((f) => f.dispose());
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controllers.forEach((c) => c.dispose());
+    _focusNodes.forEach((f) => f.dispose());
+    super.dispose();
+  }
 }

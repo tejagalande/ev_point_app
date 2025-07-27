@@ -1,3 +1,4 @@
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:ev_point/views/auth/signup_screen.dart';
@@ -73,7 +74,8 @@ class _AuthOptionScreenState extends State<AuthOptionScreen> {
             
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignupScreen() ),  (Route<dynamic> route) => false );
+                      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignupScreen() ),  (Route<dynamic> route) => false );
+                      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.signupRoute, (Route<dynamic> route) => false);
                     },
                     child: RichText(
                       text: TextSpan(

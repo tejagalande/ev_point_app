@@ -1,7 +1,8 @@
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/constants.dart';
+import 'package:ev_point/utils/shared_pref.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
-import 'package:ev_point/views/onboard/onboard_screen.dart';
 import 'package:ev_point/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -82,16 +83,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _sendToOnboard() {
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return OnboardScreen();
-          },
-        ),
-      );
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Future.delayed(Duration(seconds: 2), () {
+
+      if (SharedPref().getValue("userOnboard") != null && bool.parse(SharedPref().getValue("userOnboard")!) == true ) {
+        debugPrint("is user onboarded - ${SharedPref().getValue("userOnboard")}");
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.authOptionRoute, (Route<dynamic> route) => false);
+      } else {
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.onboardRoute, (Route<dynamic> route) => false);  
+      }
+      
+      
     });
+    });
+
   }
 
   @override

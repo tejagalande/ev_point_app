@@ -23,7 +23,11 @@ class Constants{
   static const String continu = "Continue";
   static const String helloThere = "Hello there 👋";
   static const String pleaseEnterNumber = "Please enter your phone number. You will receive an OTP code in the next step for the verification process.";
-  
+  static const String otpCodeVerify = "OTP code verification 🔐";
+  static const String didNotReceiveOtp = "Didn\'t receive otp code?";
+  static const String youCanResendCode = "You can resend code in ";
+  static const String reSend = "Resend";
+
   static const String title1 = "Easily find EV charging stations around you";
   static const String subTitle1 = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
   static const String title2 = "Fast and simple to make reservation & check in";
