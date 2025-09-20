@@ -1,5 +1,6 @@
 
 import 'package:ev_point/app.dart';
+import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/controllers/main_provider.dart';
 import 'package:ev_point/controllers/onboardProfile_provider.dart';
@@ -44,6 +45,7 @@ void main() async{
         ),
         ChangeNotifierProvider(create:(context) => MainProvider(),),
         ChangeNotifierProvider(create:(context) => HomeProvider(),),
+        ChangeNotifierProvider(create:(context) => StationListProvider(),),
       ],
       child: MyApp(),
     )

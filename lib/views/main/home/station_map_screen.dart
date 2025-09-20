@@ -280,6 +280,8 @@ class _StationMapScreenState extends State<StationMapScreen> {
                           Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
                           RatingBar.readOnly(
                             filledIcon: Icons.star_rounded,
+                            filledColor: AppColor.primary_900,
+                            halfFilledColor: AppColor.primary_900,
                             isHalfAllowed: true,
                             size: 25,
                             halfFilledIcon: Icons.star_half_rounded,

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
@@ -19,102 +20,119 @@ class _StationListScreenState extends State<StationListScreen> {
   @override
   void initState() {
     log("StationListScreen initState called");
+    log("height: ${ScreenUtil().scaleHeight}, width: ${ScreenUtil().screenWidth}");
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    final stationListProvider = context.read<StationListProvider>();
+    final screenWidth = ScreenUtil().screenWidth;
+  
     return Scaffold(
       backgroundColor: AppColor.white,
       body: SafeArea(
-        child: Stack(
+        child: Consumer<StationListProvider>(
+          builder: (context, provider, child) {
+            return Stack(
           children: [
-            Column(
-              spacing: 10.h,
-              children: [
-                SizedBox(height: 10.h,),
-            
-                // search textfield and filter icon
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Row(
-                    spacing: 10.w,
-                    children: [
-                      Expanded(
-                        child: InkWell(
+            SingleChildScrollView(
+              child: Column(
+                spacing: 10.h,
+                children: [
+                  SizedBox(height: 10.h,),
+              
+                  // search textfield and filter icon
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Row(
+                      spacing: 10.w,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(15.r),
+                            onTap: () {},
+                            child: Container(
+                              padding: EdgeInsets.all(15.r),
+                              decoration: BoxDecoration(
+                                color: AppColor.greyScale100,
+                                borderRadius: BorderRadius.circular(15.r)
+                              ),
+                              child: Row(
+                                spacing: 10.w,
+                                children: [
+                                  SvgPicture.asset("${Constants.iconPath}search.svg", height: 30,),
+                                  Text("Search Station", style: TextStyle(fontFamily: Constants.urbanistFont),)
+                                ],
+                              )
+                            ),
+                          ),
+                        ),
+                        InkWell(
                           borderRadius: BorderRadius.circular(15.r),
-                          onTap: () {},
                           child: Container(
                             padding: EdgeInsets.all(15.r),
                             decoration: BoxDecoration(
                               color: AppColor.greyScale100,
                               borderRadius: BorderRadius.circular(15.r)
                             ),
-                            child: Row(
-                              spacing: 10.w,
-                              children: [
-                                SvgPicture.asset("${Constants.iconPath}search.svg", height: 30,),
-                                Text("Search Station", style: TextStyle(fontFamily: Constants.urbanistFont),)
-                              ],
-                            )
+                            child: SvgPicture.asset("${Constants.iconPath}search_filter.svg")
                           ),
                         ),
-                      ),
-                      InkWell(
-                        borderRadius: BorderRadius.circular(15.r),
-                        child: Container(
-                          padding: EdgeInsets.all(15.r),
-                          decoration: BoxDecoration(
-                            color: AppColor.greyScale100,
-                            borderRadius: BorderRadius.circular(15.r)
-                          ),
-                          child: SvgPicture.asset("${Constants.iconPath}search_filter.svg")
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-            
-                // list
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 2,
-                  separatorBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal:  10.w),
-                    child: const Divider(thickness: 0.5,),
-                  ),
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: InkWell(
-                        onTap: () {
-                          
-                        },
-                        child: Row(
-                          spacing: 10.w,
-                          children: [
-                            SvgPicture.asset(
-                              "${Constants.iconPath}free_station_icon.svg", 
-                              height: 30.h,
+              
+                  // list
+                  provider.isLoading ? 
+                  Center(child: CircularProgressIndicator(),) :
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: provider.stationList!.length,
+                    separatorBuilder: (context, index) => Padding(
+                      padding: EdgeInsets.symmetric(horizontal:  10.w),
+                      child: const Divider(thickness: 0.5,),
+                    ),
+                    itemBuilder: (context, index) {
+                      var stationData = provider.stationList![index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        child: InkWell(
+                          onTap: () {
+                            log("location: ${stationData.location}");
+                          },
+                          child: Row(
+                            spacing: 10.w,
+                            children: [
+                              SvgPicture.asset(
+                                "${Constants.iconPath}free_station_icon.svg", 
+                                height: 30.h,
+                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(stationData.name ?? "" , style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
+                                  SizedBox(
+                                    width: screenWidth * 0.7 , 
+                                    // width: 100,
+                                    child: Text(
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      stationData.address ?? "" , style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),)),
+                                ],
                               ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Station Name", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
-                                Text("Address", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),),
-                              ],
-                            ),
-                            const Spacer(),
-                        
-                            Icon(Icons.chevron_right_rounded)
-                        
-                          ],
+                              const Spacer(),
+                          
+                              Icon(Icons.chevron_right_rounded)
+                          
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
 
                           // list or map icon
@@ -163,7 +181,9 @@ class _StationListScreenState extends State<StationListScreen> {
                 ),
               ),
           ],
-        ),
+        );
+          },
+        )
       )
     );
   }
