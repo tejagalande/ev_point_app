@@ -15,11 +15,16 @@ class CustomButton extends StatefulWidget {
   bool? isShadow;
   bool? isPrefixIcon;
   EdgeInsets? margin;
+  double? blurRadius;
+  Color? boxShadowColor;
+  BoxBorder? border;
+  EdgeInsetsGeometry? padding;
+  
 
   void Function()? onTapCallback;
 
 
-  CustomButton({super.key, required this.title, this.isBorder, this.boldText, this.buttonColor, this.textColor, this.borderRadius, this.isShadow, this.margin , this.isPrefixIcon , this.onTapCallback});
+  CustomButton({super.key, required this.title, this.isBorder, this.boldText, this.buttonColor,this.padding ,this.textColor, this.borderRadius, this.isShadow, this.margin , this.isPrefixIcon , this.onTapCallback, this.blurRadius, this.boxShadowColor, this.border, });
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -32,15 +37,16 @@ class _CustomButtonState extends State<CustomButton> {
       onTap: widget.onTapCallback,
       child: Container(
         margin: widget.margin,
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
           color: widget.buttonColor,
+          border: widget.border ,
           borderRadius: BorderRadius.circular( widget.borderRadius != null ? widget.borderRadius! : 0.0 ),
           boxShadow: [
             widget.isShadow == true && widget.isShadow != null ? BoxShadow(
-              color: AppColor.greyScale400,
+              color: widget.boxShadowColor ?? AppColor.greyScale400,
               offset: Offset(0.0, 3.0),
-              blurRadius: 9,
+              blurRadius: widget.blurRadius ?? 9,
               spreadRadius: 0
             ) : BoxShadow()
           ]

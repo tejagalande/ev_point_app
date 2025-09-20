@@ -1,5 +1,7 @@
 
 import 'package:ev_point/app.dart';
+import 'package:ev_point/controllers/home_provider.dart';
+import 'package:ev_point/controllers/main_provider.dart';
 import 'package:ev_point/controllers/onboardProfile_provider.dart';
 import 'package:ev_point/controllers/onboard_provider.dart';
 import 'package:ev_point/controllers/selfieCamera_provider.dart';
@@ -39,7 +41,9 @@ void main() async{
         ),
         ChangeNotifierProvider(
           create: (_) => SelfiecameraProvider(),
-        )
+        ),
+        ChangeNotifierProvider(create:(context) => MainProvider(),),
+        ChangeNotifierProvider(create:(context) => HomeProvider(),),
       ],
       child: MyApp(),
     )

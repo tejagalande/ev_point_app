@@ -1,7 +1,9 @@
 import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/views/auth/auth_option_screen.dart';
+import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
 import 'package:ev_point/views/onboard/splash_screen.dart';
+import 'package:ev_point/views/personalize/personalize_screen.dart';
 import 'package:ev_point/views/profile/onboard_profile_screen.dart';
 import 'package:ev_point/views/profile/selfieCamera_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class AppPages {
     AppRoutes.otpRoute: (context) =>  OtpScreen(),
     AppRoutes.onboardProfileRoute : (context) => OnboardProfile(),
     AppRoutes.selfieRoute : (context) => SelfiecameraScreen(),
-    AppRoutes.authOptionRoute  : (context) => AuthOptionScreen()
+    AppRoutes.authOptionRoute  : (context) => AuthOptionScreen(),
+    AppRoutes.personalizeVehicleRoute : (context) => PersonalizeScreen(),
+    AppRoutes.mainRoute : (context) => MainScreen(), 
   };
 }

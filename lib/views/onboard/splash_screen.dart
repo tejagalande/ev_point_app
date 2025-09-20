@@ -10,8 +10,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io' show Platform;
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,7 +21,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   // Android settings
   AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -34,24 +33,31 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
 
-
-
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      
-    // Initialize settings
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsDarwin,
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // Initialize settings
+      final InitializationSettings initializationSettings =
+          InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsDarwin,
+          );
+
+      await requestNotificationPermissions();
+
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+      var userId = SharedPref().getValue("user_id");
+      if (context.mounted && userId != null && userId.isNotEmpty) {
+        Navigator.pushNamedAndRemoveUntil(
+           context ,
+          AppRoutes.mainRoute,
+          (Route<dynamic> route) => false,
         );
-    
-     await requestNotificationPermissions();
+      } else {
+        _sendToOnboard();
+      }
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-    },);
-    _sendToOnboard();
+    });
   }
 
   Future<void> requestNotificationPermissions() async {
@@ -83,20 +89,27 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _sendToOnboard() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(Duration(seconds: 2), () {
-
-      if (SharedPref().getValue("userOnboard") != null && bool.parse(SharedPref().getValue("userOnboard")!) == true ) {
-        debugPrint("is user onboarded - ${SharedPref().getValue("userOnboard")}");
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.authOptionRoute, (Route<dynamic> route) => false);
-      } else {
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.onboardRoute, (Route<dynamic> route) => false);  
-      }
-      
-      
+        if (SharedPref().getValue("userOnboard") != null &&
+            bool.parse(SharedPref().getValue("userOnboard")!) == true) {
+          debugPrint(
+            "is user onboarded - ${SharedPref().getValue("userOnboard")}",
+          );
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.authOptionRoute,
+            (Route<dynamic> route) => false,
+          );
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.onboardRoute,
+            (Route<dynamic> route) => false,
+          );
+        }
+      });
     });
-    });
-
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:ev_point/main.dart';
 import 'package:ev_point/routes/app_routes.dart';
@@ -9,9 +10,11 @@ import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:ev_point/widgets/back_arrow.dart';
 import 'package:ev_point/widgets/dialogbox/custom_dialogbox.dart';
+import 'package:ev_point/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,10 +34,13 @@ class _OtpScreenState extends State<OtpScreen> {
   int _seconds = 60;
   Timer? _timer;
   late List<TextEditingController> _controllers;
+  final otpVerifyController = TextEditingController();
   late List<FocusNode> _focusNodes;
   int get timerText => _seconds ;
   int? otp;
   String userInsertedOtp = "";
+  Map<String, dynamic> args = {};
+  bool funCall = true;
   @override
   void initState() {
     super.initState();
@@ -42,8 +48,34 @@ class _OtpScreenState extends State<OtpScreen> {
     _focusNodes = List.generate(_otpLength, (_) => FocusNode());
 
     startTimer();
-    getOtp();
+    // getOtp();
   }
+
+  Future<bool> sendOtp(String phoneNumber) async {
+    log("sendOtp function called and phone number is $phoneNumber");
+  try {
+    // await supabase.auth.signInWithOtp(
+    //   phone: phoneNumber,
+    // );
+
+    // await SupabaseManager().client.auth.signInWithOtp(
+    //   phone: phoneNumber,
+
+    // ).then((value) {
+    //   log("value after send the otp:");
+    // },);
+
+    await SupabaseManager.supabaseClient.auth.signInWithOtp(
+      phone: "+91$phoneNumber"
+    );
+
+    return true;
+  } catch (error) {
+    debugPrint('Error sending OTP: $error');
+    return false;
+  }
+}
+
 
   Future<void> getOtp() async{
     otp = await SupabaseManager().client.rpc("generate_otp_code").then((value) {
@@ -55,13 +87,36 @@ class _OtpScreenState extends State<OtpScreen> {
     debugPrint("OTP code: ${otp ?? 0 }");
   }
 
-  void verifyOtp(){
-    debugPrint("user inserted otp: $userInsertedOtp");
-    if( userInsertedOtp.compareTo(otp!.toString()) == 0){
-      debugPrint("OTP is verified.");
+  void verifyOtp() async{
+    log("user inserted otp: $userInsertedOtp");
+   
+      // log("OTP is verified.");
+
+      // await SupabaseManager.supabaseClient.auth.verifyOTP(
+      //   type: OtpType.sms,
+      //   phone: "+91${args["phone_number"]}",
+      //   token: userInsertedOtp
+      // ).then((value) async{
+      //   // value.user?.id
+      //   log("User data: ${value.user}");
+      //   if (value.user != null && value.user!.id.isNotEmpty ) {
+      //     await SharedPref().setData("user_id", value.user!.id);  
+      //     var userId = SharedPref().getValue("user_id");
+      //     log("user id: $userId");
+      //   }
+        
+      // },).catchError( (error) {
+      //   log("Verify Otp Error: $error");
+      // },);
       
-      customDialogBox(context);
-      SharedPref().setData("userOnboard", "true").then((val){
+      customDialogBox(
+        context: context,
+        image: "${Constants.imagePath}sign_up_successfull.png",
+        title: "Sign up Successful!",
+        subTitle: "Please wait...",
+        child: CustomCircularLoader(),
+       );
+      await SharedPref().setData("userOnboard", "true").then((val){
         debugPrint("user onboarded.. $val");
       });
       WidgetsBinding.instance.addPostFrameCallback((_){
@@ -69,15 +124,13 @@ class _OtpScreenState extends State<OtpScreen> {
 
         Future.delayed(Duration(seconds: 1), (){
           if(!mounted) return null; 
-          Navigator.pushNamed(context, AppRoutes.onboardProfileRoute);
+          var data = {"phone_number" : args["phone_number"] };
+          Navigator.pushNamed(context, AppRoutes.onboardProfileRoute, arguments: data);
         });
 
         
       });
-    }
-    else{
-      debugPrint("OTP is invalid.");
-    }
+ 
   }
 
   Future<void> showSimpleNotification(String otpCode) async {
@@ -144,50 +197,19 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
-  Widget _buildOtpField(int index) {
-    
-
-    return SizedBox(
-      
-      width: 50.w,
-      child: RawKeyboardListener(
-        focusNode: FocusNode(), // A dummy node for RawKeyboardListener
-        onKey: (event) => _onKey(event, index),
-        child: TextField(
-          controller: _controllers[index],
-          focusNode: _focusNodes[index],
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          maxLength: 1,
-          style: TextStyles.h4Bold24,
-          
-          decoration: InputDecoration(
-            counterText: '',
-            filled: true,
-            fillColor: _focusNodes[index].hasFocus ? AppColor.primary_900.withAlpha(40) : AppColor.greyScale50,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            borderSide: BorderSide(color: AppColor.greyScale200, )
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            borderSide: BorderSide(color: _focusNodes[index].hasFocus ? AppColor.primary_900 : AppColor.greyScale200, )
-          )
-          ),
-          
-          onChanged: (value) => _onChanged(value, index),
-          
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        ),
-      ),
-    );
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (args.isNotEmpty && funCall) {
+
+        // sendOtp(args["phone_number"]);
+        funCall = false;
+        
+      }
+    },);
 
     return Scaffold(
       backgroundColor: AppColor.white,
@@ -211,16 +233,35 @@ class _OtpScreenState extends State<OtpScreen> {
                 style: TextStyles.bodyXlargeRegular18,
               ),
           
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(_otpLength, (index) {
-                    return Padding(
-                      padding: EdgeInsets.all(8.0.r),
-                      child: _buildOtpField(index),
-                    );
-                  }),
-                ),
+              // Center(
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: List.generate(_otpLength, (index) {
+              //       return Padding(
+              //         padding: EdgeInsets.all(8.0.r),
+              //         child: _buildOtpField(index),
+              //       );
+              //     }),
+              //   ),
+              // ),
+
+              OtpTextField(
+                numberOfFields: 6,
+                textStyle: TextStyle(fontSize: 17.sp),
+                // contentPadding: EdgeInsets.all(10.r),
+                borderRadius: BorderRadius.circular(10.r),
+                showFieldAsBox: true,
+                margin: EdgeInsets.only(right: 12.w),
+                
+                filled: true,
+                fillColor: AppColor.greyScale50,
+                onSubmit: (value) {
+                  userInsertedOtp = value;
+                  log("entered otp: $value");
+                  verifyOtp();
+                  
+                },
+
               ),
           
               Center(

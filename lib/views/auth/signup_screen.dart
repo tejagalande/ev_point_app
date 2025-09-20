@@ -58,6 +58,7 @@ class SignupScreen extends StatelessWidget {
                     shouldFormat: true,
                     defaultCountry: IsoCode.US,
                     style: TextStyles.h5Bold20,
+                    
                     decoration: InputDecoration(
                       labelText: "Phone Number",
                       labelStyle: TextStyles.bodyLargeBold16,

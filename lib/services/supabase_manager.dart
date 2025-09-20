@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ev_point/utils/constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,7 +19,11 @@ class SupabaseManager {
 
   Future<void> init() async{
     await Supabase.initialize(
-      url: Constants.supabaseUrl, anonKey: Constants.anonKey ?? "");
+      url: Constants.supabaseUrl, anonKey: Constants.anonKey ?? "").then((value) {
+        log("supabase client created: ${value.client.hashCode}");
+      },).catchError( (error) {
+        log("supabase client initialized error: $error");
+      },);
 
     client = Supabase.instance.client;
   }

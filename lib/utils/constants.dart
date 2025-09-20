@@ -1,3 +1,5 @@
+import 'package:ev_point/utils/theme/app_color.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Constants{
@@ -34,9 +36,26 @@ class Constants{
   static const String title3 = "Make payments safely & quickly with EVPoint";
 
 
-  // static final anonKey = String.fromEnvironment("ANON_API_KEY");
-  static var anonKey = dotenv.env["ANON_API_KEY"];
+  static final anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwc21kb2d3dWFqd2NtcnRicW9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MjI3NDEsImV4cCI6MjA2NzA5ODc0MX0.zdTcyy5_7JkI7TLsLLIgr_9ZMlF0QIv99VhQBklmDWI";
+  // static var anonKey = dotenv.env["ANON_API_KEY"];
   static const supabaseUrl = "https://wpsmdogwuajwcmrtbqol.supabase.co";
+
+
+  // color gradients
+  static LinearGradient mapSearchLinearGradient = LinearGradient(
+                  colors: [
+                    AppColor.primary_900.withAlpha(170),
+                    AppColor.primary_900.withAlpha(130),
+                    AppColor.primary_900.withAlpha(100),
+                    AppColor.primary_900.withAlpha(90),
+                    AppColor.primary_900.withAlpha(20),
+                  ],
+                  stops: [
+                    1.0, 0.8, 0.3, 0.2, 0.1
+                  ].reversed.toList(),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter
+                );
 
 
 }

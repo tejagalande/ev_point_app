@@ -26,9 +26,15 @@ class OnboardProfile extends StatefulWidget {
 
 class _OnboardProfileState extends State<OnboardProfile> {
   
+
+  bool isRender = false;
+
   @override
   void initState() {
-    // TODO: implement initState
+  
+
+
+    
     super.initState();
     // context.watch<OnboardprofileProvider>().dobFocusNode.addListener((){
     //   if(context.watch<OnboardprofileProvider>().dobFocusNode.hasFocus) {
@@ -38,8 +44,26 @@ class _OnboardProfileState extends State<OnboardProfile> {
     //     print("textfield has lost focus");
     //   }
     // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!isRender) {
+
+      args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    if (args.isNotEmpty) {
+
+      context.read<OnboardprofileProvider>().phoneNumber = args['phone_number'];
+      
+    }
+        
+      }      
+    },);
+
   }
   
+  Map<String, dynamic> args = {};
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final profileProvider = context.watch<OnboardprofileProvider>();
@@ -50,6 +74,8 @@ class _OnboardProfileState extends State<OnboardProfile> {
         debugPrint("textfield is lost focus");
       }
     },);
+
+
 
     return Scaffold(
       backgroundColor: AppColor.white,
@@ -368,8 +394,22 @@ class _OnboardProfileState extends State<OnboardProfile> {
                       //   },
                       // ),
 
-                       SafeArea(
-                         child: CustomButton(
+                       Consumer<OnboardprofileProvider>(
+                        builder: (context, value, child) {
+
+                              if (value.status != null && value.status!) {
+                                  
+                                  WidgetsBinding.instance.addPostFrameCallback((_){
+                                    Navigator.popAndPushNamed(context, AppRoutes.personalizeVehicleRoute);
+                                  });
+                                }
+                                
+                         return SafeArea(
+                         child: value.isLoading ? 
+                         Center(
+                          child: CircularProgressIndicator(),
+                         )
+                         : CustomButton(
                           title: Constants.continu,
                           buttonColor: profileProvider.isAllFieldsFilled ? 
                            AppColor.primary_900 : AppColor.buttonDisabled,
@@ -377,10 +417,25 @@ class _OnboardProfileState extends State<OnboardProfile> {
                           textColor: AppColor.white,
                           
                           onTapCallback: () {
-                            profileProvider.submitForm();
+                            value.submitForm();
+
                           },
                                                ),
-                       ),
+                       );
+                        },
+                       )
+
+                      // CustomButton(
+                      //     title: Constants.continu,
+                      //     buttonColor: profileProvider.isAllFieldsFilled ? 
+                      //      AppColor.primary_900 : AppColor.buttonDisabled,
+                      //     borderRadius: 30.0.r,
+                      //     textColor: AppColor.white,
+                          
+                      //     onTapCallback: () {
+                      //       profileProvider.submitForm();
+                      //     },
+                      //                          ),
                         
 
                     ],

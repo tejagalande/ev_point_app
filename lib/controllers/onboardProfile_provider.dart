@@ -1,8 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:ev_point/services/supabase_manager.dart';
+import 'package:ev_point/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -26,10 +27,12 @@ class OnboardprofileProvider extends ChangeNotifier {
   String? email;
   String? gender;
   String? _imageName;
-
+  String? phoneNumber;
   String? dateOfBirth;
   String? address;
+  bool? status;
   FocusNode dobFocusNode = FocusNode();
+  bool isLoading = false;
 
   bool isAllFieldsFilled = false;
 
@@ -84,20 +87,73 @@ class OnboardprofileProvider extends ChangeNotifier {
   }
 
   submitForm() async {
+
+    isLoading = true;
+    log("is loading: $isLoading");
+    notifyListeners();
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      debugPrint(
-        "name- $firstName email- $email gender- $gender dob- ${dOBTextEditingController.text} address- $address image path- $imagePath",
+      log(
+        "name- $firstName mobile- $phoneNumber email- $email gender- $gender dob- ${dOBTextEditingController.text} address- $address image path- $imagePath",
       );
-      debugPrint("form data has been saved.");
+      log("form data has been saved.");
       // final user = SupabaseManager().client.
+      var fullName = firstName!.split(' ');
+      var userId = SharedPref().getValue("user_id");
+
+      if (userId != null && userId.isNotEmpty) {
 
 
-      final response = await SupabaseManager().client.storage.from("ev-point-storage").upload("user_profile/$_imageName", File(imagePath!));
+        log("user id: $userId");
+        
+      }
+      Future.delayed(Duration(seconds: 2), (){
+        isLoading = false;
+        status = true;
+        log("is loading: $isLoading");
+        notifyListeners();
 
-      final publicUrl = await SupabaseManager().client.storage.from("ev-point-storage").getPublicUrl("user_profile/$_imageName");
+        
+      });
+      // await SupabaseManager.supabaseClient.storage.from("ev-point-storage").
 
-      debugPrint("public url- $publicUrl");
+      // final response = await SupabaseManager().client.storage.from("ev-point-storage")
+      //   .upload("user_profile/$userId/$_imageName", File(imagePath!))
+      //   .then((value) async{
+      //     final publicUrl = SupabaseManager()
+      //                       .client.storage.from("ev-point-storage")
+      //                       .getPublicUrl("user_profile/$userId/$_imageName");       
+
+      //     log("public url- $publicUrl");
+
+      //     await SupabaseManager.supabaseClient.from('User').insert({
+      //       "first_name" : fullName[0],
+      //       "last_name" : fullName[1],
+      //       "email_id" : email,
+      //       "country_code" : "+91",
+      //       "phone_number" : phoneNumber,
+      //       "gender" : gender,
+      //       "dob" : dOBTextEditingController.text,
+      //       "address" : addressTextEditingController.text,
+      //       "country" : "India",
+      //       "profile_url" : publicUrl,
+      //       "user_auth_id" : userId
+      //     }).count().then((value) {
+
+      //     log("User data inserted. -> $value");
+
+          
+      //   },);   
+      //   },)
+
+      //   .catchError((error) {
+      //     log("Error: $error");
+      //   },);
+
+
+
+      
     }
   }
 }
