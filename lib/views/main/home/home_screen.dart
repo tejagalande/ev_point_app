@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/utils/constants.dart';
+import 'package:ev_point/utils/permission_manager.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/main/home/station_list_screen.dart';
 import 'package:ev_point/views/main/home/station_map_screen.dart';
@@ -10,6 +11,7 @@ import 'package:ev_point/widgets/dialogbox/custom_dialogbox.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,8 +26,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showDialogs();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+
+      var status = await PermissionManager.checkPermission(Permission.location);
+      if ( status.isDenied || status.isPermanentlyDenied ) {
+        showDialogs();  
+      } 
+      
     });
   }
 
@@ -47,7 +54,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             buttonColor: AppColor.primary_900,
             borderRadius: 25.r,
             textColor: AppColor.white,
-            onTapCallback: () {},
+            onTapCallback: () async{
+
+              await PermissionManager.requestPermission(Permission.location);
+              Navigator.pop( context  );
+
+            },
           ),
 
           // cancel button

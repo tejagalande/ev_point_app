@@ -20,13 +20,14 @@ class _StationListScreenState extends State<StationListScreen> {
   @override
   void initState() {
     log("StationListScreen initState called");
-    log("height: ${ScreenUtil().scaleHeight}, width: ${ScreenUtil().screenWidth}");
+    log("height: ${ScreenUtil().screenHeight}, width: ${ScreenUtil().screenWidth}");
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     final stationListProvider = context.read<StationListProvider>();
     final screenWidth = ScreenUtil().screenWidth;
+    final screenHeight = ScreenUtil().screenHeight;
   
     return Scaffold(
       backgroundColor: AppColor.white,
@@ -84,7 +85,9 @@ class _StationListScreenState extends State<StationListScreen> {
               
                   // list
                   provider.isLoading ? 
-                  Center(child: CircularProgressIndicator(),) :
+                  SizedBox(
+                    height: screenHeight / 2,
+                    child: Center( child: CircularProgressIndicator(color: AppColor.primary_900,),)) :
                   ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
