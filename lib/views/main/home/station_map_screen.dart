@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:developer';
 import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:ev_point/controllers/home/station_map_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/main/home/home_screen.dart';
 import 'package:ev_point/widgets/custom_button.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,372 +24,408 @@ class StationMapScreen extends StatefulWidget {
 }
 
 class _StationMapScreenState extends State<StationMapScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
-  static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(37.4219999, -122.0862462),
-    zoom: 7.0,
-  );
   final Set<Marker> _markers = {};
-  bool _liteModeEnable = true;
+  StationMapProvider? mapProvider;
 
   @override
   void initState() {
     log("StationMapScreen initState called");
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    mapProvider = Provider.of<StationMapProvider>(context);
+
     return Scaffold(
       backgroundColor: AppColor.white,
 
-      body: Stack(
-        children: [
-          GoogleMap(
-            liteModeEnabled: _liteModeEnable,
+      body: Consumer<StationMapProvider>(
+        builder: (context, value, child) {
+          log("liteModeEnable: ${value.liteModeEnable}");
+          return Stack(
+            children: [
+              GoogleMap(
+                
 
-            initialCameraPosition: _initialPosition,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-
-            markers: _markers,
-            myLocationEnabled: false,
-            myLocationButtonEnabled: false,
-            indoorViewEnabled: false,
-            buildingsEnabled: false,
-            trafficEnabled: false,
-            zoomControlsEnabled: false,
-            mapType: MapType.normal,
-            compassEnabled: false,
-            onTap: (LatLng position) {
-              // Hide search results when tapping on map
-              setState(() {
-                // _showResults = false;
-                _liteModeEnable = false;
-              });
-            },
-          ),
-
-          // search textfield
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              height: 110,
-              decoration: BoxDecoration(
-                gradient: Constants.mapSearchLinearGradient,
+                initialCameraPosition: value.initialPosition,
+                onMapCreated: (controller) {
+                  value.onMapCreated(controller);
+                  // Start loading markers after map is ready
+                  Future.delayed(Duration(milliseconds: 1000), () {
+                    if (!value.isDisposed) {
+                      // Choose your loading approach:
+                      value.loadMarkersProgressively(); // Approach 1
+                      // OR
+                      // provider.loadMarkersWithAnimation(); // Approach 3
+                    }
+                  });
+                },
+                liteModeEnabled: value.liteModeEnable,
+                markers: value.markers,
+                myLocationEnabled: value.myLocationEnabled,
+                myLocationButtonEnabled: false,
+                indoorViewEnabled: false,
+                buildingsEnabled: false,
+                trafficEnabled: false,
+                zoomControlsEnabled: value.zoomControlsEnabled,
+                mapType: MapType.normal,
+                compassEnabled: false,
+                onTap: (argument) {
+                  value.onMapInteraction();
+                },
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+                      // Factory<OneSequenceGestureRecognizer>(() => TapGestureRecognizer()),
+                      // Factory<OneSequenceGestureRecognizer>(() => ScaleGestureRecognizer()),
+                      // Factory<OneSequenceGestureRecognizer>(() => PanGestureRecognizer()),
+                      // Factory<OneSequenceGestureRecognizer>(() => VerticalDragGestureRecognizer()),
+                      // Factory<OneSequenceGestureRecognizer>(() => HorizontalDragGestureRecognizer()),
+                },
+                onCameraMove: (position) {
+                  // if (!value.liteModeEnable) {
+                  value.onMapInteraction();
+                  // }
+                },
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: Row(
-                  spacing: 10.w,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(15.r),
-                        onTap: () {},
-                        child: Container(
-                          padding: EdgeInsets.all(15.r),
-                          decoration: BoxDecoration(
-                            color: AppColor.greyScale100,
-                            borderRadius: BorderRadius.circular(15.r),
-                          ),
-                          child: Row(
-                            spacing: 10.w,
-                            children: [
-                              SvgPicture.asset(
-                                "${Constants.iconPath}search.svg",
-                                height: 30,
-                              ),
-                              Text(
-                                "Search Station",
-                                style: TextStyle(
-                                  fontFamily: Constants.urbanistFont,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(15.r),
-                      child: Container(
-                        padding: EdgeInsets.all(15.r),
-                        decoration: BoxDecoration(
-                          color: AppColor.greyScale100,
-                          borderRadius: BorderRadius.circular(15.r),
-                        ),
-                        child: SvgPicture.asset(
-                          "${Constants.iconPath}search_filter.svg",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
 
-          // charging station card
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Column(
-              
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    spacing: 10.w,
-                    children: [
-                      // location icon
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          // duration: Duration(milliseconds: 800),
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: AppColor.primary_900,
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColor.primary_900.withAlpha(70),
-                                AppColor.primary_900,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColor.greyScale300,
-                                offset: Offset(0, 3),
-                                blurRadius: 20,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.my_location_rounded,
-                            color: AppColor.white,
-                          ),
-                        ),
-                      ),
-
-                      // list icon
-                      InkWell(
-                        onTap: () {
-                          context.read<HomeProvider>().changeTab();
-                        },
-                        child: Container(
-                          // duration: Duration(milliseconds: 800),
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: AppColor.primary_900,
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColor.primary_900.withAlpha(70),
-                                AppColor.primary_900,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColor.greyScale300,
-                                offset: Offset(0, 3),
-                                blurRadius: 20,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.format_list_bulleted,
-                            color: AppColor.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
+              // search textfield
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  height: 110,
                   decoration: BoxDecoration(
-                    color: AppColor.white,
-                    borderRadius: BorderRadius.circular(16.r),
+                    gradient: Constants.mapSearchLinearGradient,
                   ),
-                  margin: EdgeInsets.all(10.r),
-                  padding: EdgeInsets.all(15.r),
-                  child: Column(
-                    
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // station name, address text
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Station Name",
-                                style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),), 
-                              Text(
-                                "Address",
-                                style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
-                                )],
-                          ),
-
-                          const Spacer(),
-
-                          Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: AppColor.primary_900,
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColor.primary_900.withAlpha(70),
-                                  AppColor.primary_900,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Row(
+                      spacing: 10.w,
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(15.r),
+                            onTap: () {},
+                            child: Container(
+                              padding: EdgeInsets.all(15.r),
+                              decoration: BoxDecoration(
+                                color: AppColor.greyScale100,
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              child: Row(
+                                spacing: 10.w,
+                                children: [
+                                  SvgPicture.asset(
+                                    "${Constants.iconPath}search.svg",
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    "Search Station",
+                                    style: TextStyle(
+                                      fontFamily: Constants.urbanistFont,
+                                    ),
+                                  ),
                                 ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
                               ),
                             ),
-                            child: Transform.rotate(
-                              angle: 13.2,
+                          ),
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(15.r),
+                          child: Container(
+                            padding: EdgeInsets.all(15.r),
+                            decoration: BoxDecoration(
+                              color: AppColor.greyScale100,
+                              borderRadius: BorderRadius.circular(15.r),
+                            ),
+                            child: SvgPicture.asset(
+                              "${Constants.iconPath}search_filter.svg",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // charging station card
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        spacing: 10.w,
+                        children: [
+                          // location icon
+                          InkWell(
+                            onTap: () {
+                              mapProvider!.moveToCurrentLocation();
+                            },
+                            child: Container(
+                              // duration: Duration(milliseconds: 800),
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: AppColor.primary_900,
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColor.primary_900.withAlpha(70),
+                                    AppColor.primary_900,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColor.greyScale300,
+                                    offset: Offset(0, 3),
+                                    blurRadius: 20,
+                                  ),
+                                ],
+                              ),
                               child: Icon(
-                                Icons.navigation,
+                                Icons.my_location_rounded,
+                                color: AppColor.white,
+                              ),
+                            ),
+                          ),
+
+                          // list icon
+                          InkWell(
+                            onTap: () {
+                              context.read<HomeProvider>().changeTab();
+                            },
+                            child: Container(
+                              // duration: Duration(milliseconds: 800),
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: AppColor.primary_900,
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColor.primary_900.withAlpha(70),
+                                    AppColor.primary_900,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColor.greyScale300,
+                                    offset: Offset(0, 3),
+                                    blurRadius: 20,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.format_list_bulleted,
                                 color: AppColor.white,
                               ),
                             ),
                           ),
                         ],
                       ),
+                    ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: AppColor.white,
+                    //     borderRadius: BorderRadius.circular(16.r),
+                    //   ),
+                    //   margin: EdgeInsets.all(10.r),
+                    //   padding: EdgeInsets.all(15.r),
+                    //   child: Column(
 
-                      SizedBox(height: 5.h,),
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       // station name, address text
+                    //       Row(
+                    //         children: [
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text(
+                    //                 "Station Name",
+                    //                 style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
+                    //               Text(
+                    //                 "Address",
+                    //                 style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
+                    //                 )],
+                    //           ),
 
-                      // ratings stars
-                      Row(
-                        spacing: 5.w,
-                        children: [
-                          Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
-                          RatingBar.readOnly(
-                            filledIcon: Icons.star_rounded,
-                            filledColor: AppColor.primary_900,
-                            halfFilledColor: AppColor.primary_900,
-                            isHalfAllowed: true,
-                            size: 25,
-                            halfFilledIcon: Icons.star_half_rounded,
-                            emptyIcon: Icons.star_border_rounded,
-                            initialRating: 3.5,
-                            maxRating: 5,
-                          ),
-                          Text("(130 reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
-                        ],
-                      ),
+                    //           const Spacer(),
 
-                      SizedBox(height: 5.h,),
+                    //           Container(
+                    //             height: 50,
+                    //             width: 50,
+                    //             decoration: BoxDecoration(
+                    //               color: AppColor.primary_900,
+                    //               shape: BoxShape.circle,
+                    //               gradient: LinearGradient(
+                    //                 colors: [
+                    //                   AppColor.primary_900.withAlpha(70),
+                    //                   AppColor.primary_900,
+                    //                 ],
+                    //                 begin: Alignment.topLeft,
+                    //                 end: Alignment.bottomRight,
+                    //               ),
+                    //             ),
+                    //             child: Transform.rotate(
+                    //               angle: 13.2,
+                    //               child: Icon(
+                    //                 Icons.navigation,
+                    //                 color: AppColor.white,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
 
-                      // available, KM, duration text and icons
-                      Row(
-                        spacing: 10.w,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppColor.primary_900,
-                              borderRadius: BorderRadius.circular(6.r)
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                            child: Text("Available", style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
-                          ),
+                    //       SizedBox(height: 5.h,),
 
-                          Row(
-                            spacing: 3.w,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.location_on_rounded),
-                              Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                            ],
-                          ),
+                    //       // ratings stars
+                    //       Row(
+                    //         spacing: 5.w,
+                    //         children: [
+                    //           Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
+                    //           RatingBar.readOnly(
+                    //             filledIcon: Icons.star_rounded,
+                    //             filledColor: AppColor.primary_900,
+                    //             halfFilledColor: AppColor.primary_900,
+                    //             isHalfAllowed: true,
+                    //             size: 25,
+                    //             halfFilledIcon: Icons.star_half_rounded,
+                    //             emptyIcon: Icons.star_border_rounded,
+                    //             initialRating: 3.5,
+                    //             maxRating: 5,
+                    //           ),
+                    //           Text("(130 reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
+                    //         ],
+                    //       ),
 
-                          Row(
-                            spacing: 3.w,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.directions_car),
-                              Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 5.h,),
+                    //       SizedBox(height: 5.h,),
 
-                      const Divider(thickness: 0.5,),
+                    //       // available, KM, duration text and icons
+                    //       Row(
+                    //         spacing: 10.w,
+                    //         children: [
+                    //           Container(
+                    //             decoration: BoxDecoration(
+                    //               color: AppColor.primary_900,
+                    //               borderRadius: BorderRadius.circular(6.r)
+                    //             ),
+                    //             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                    //             child: Text("Available", style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
+                    //           ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
-                          Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
-                        ],
-                      ),
+                    //           Row(
+                    //             spacing: 3.w,
+                    //             crossAxisAlignment: CrossAxisAlignment.center,
+                    //             children: [
+                    //               Icon(Icons.location_on_rounded),
+                    //               Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                    //             ],
+                    //           ),
 
-                      const Divider(thickness: 0.5,),
+                    //           Row(
+                    //             spacing: 3.w,
+                    //             crossAxisAlignment: CrossAxisAlignment.center,
+                    //             children: [
+                    //               Icon(Icons.directions_car),
+                    //               Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                    //             ],
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       SizedBox(height: 5.h,),
 
-                      SizedBox(height: 5.h,),
+                    //       const Divider(thickness: 0.5,),
 
-                      Row(
-                        spacing: 20.w,
-                        children: [
+                    //       Row(
+                    //         mainAxisAlignment: MainAxisAlignment.end,
+                    //         children: [
+                    //           Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
+                    //           Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
+                    //         ],
+                    //       ),
 
-                          // view button
-                          Expanded(
-                            child: CustomButton(
-                              title: "View", 
-                              padding: EdgeInsets.symmetric(vertical: 8.h),
-                              buttonColor: AppColor.white,
-                              border: Border.all(color: AppColor.primary_900, width: 2.w),
-                              borderRadius: 30.r,
-                              textColor: AppColor.primary_900,
-                              onTapCallback: () {
-                                
-                              },
-                            
-                              ),
-                          ),
+                    //       const Divider(thickness: 0.5,),
 
-                          // book button
-                          Expanded(
-                            child: CustomButton(
-                              title: "Book", 
-                              padding: EdgeInsets.symmetric(vertical: 8.h),
-                              buttonColor: AppColor.primary_900,
-                              textColor: AppColor.white,
-                              borderRadius: 30.r,
-                              onTapCallback: () {
-                                
-                              },
-                            
-                              ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    //       SizedBox(height: 5.h,),
+
+                    //       Row(
+                    //         spacing: 20.w,
+                    //         children: [
+
+                    //           // view button
+                    //           Expanded(
+                    //             child: CustomButton(
+                    //               title: "View",
+                    //               padding: EdgeInsets.symmetric(vertical: 8.h),
+                    //               buttonColor: AppColor.white,
+                    //               border: Border.all(color: AppColor.primary_900, width: 2.w),
+                    //               borderRadius: 30.r,
+                    //               textColor: AppColor.primary_900,
+                    //               onTapCallback: () {
+
+                    //               },
+
+                    //               ),
+                    //           ),
+
+                    //           // book button
+                    //           Expanded(
+                    //             child: CustomButton(
+                    //               title: "Book",
+                    //               padding: EdgeInsets.symmetric(vertical: 8.h),
+                    //               buttonColor: AppColor.primary_900,
+                    //               textColor: AppColor.white,
+                    //               borderRadius: 30.r,
+                    //               onTapCallback: () {
+
+                    //               },
+
+                    //               ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   mapProvider = Provider.of<StationMapProvider>(context);
+  //   super.didChangeDependencies();
+  // }
+
+  @override
+  void dispose() {
+    // context.read<StationMapProvider>().controller?.dispose();
+    // mapProvider?.dispose();
+
+    super.dispose();
   }
 }

@@ -90,7 +90,7 @@ class _StationListScreenState extends State<StationListScreen> {
                     child: Center( child: CircularProgressIndicator(color: AppColor.primary_900,),)) :
                   ListView.separated(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: NeverScrollableScrollPhysics(),  
                     itemCount: provider.stationList!.length,
                     separatorBuilder: (context, index) => Padding(
                       padding: EdgeInsets.symmetric(horizontal:  10.w),
