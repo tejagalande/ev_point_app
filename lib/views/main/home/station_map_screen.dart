@@ -62,7 +62,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                     }
                   });
                 },
-                liteModeEnabled: value.liteModeEnable,
+                liteModeEnabled: false,
                 markers: value.markers,
                 myLocationEnabled: value.myLocationEnabled,
                 myLocationButtonEnabled: false,

@@ -70,11 +70,13 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/utils/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class StationMapProvider extends ChangeNotifier {
   // Lite mode for initial fast loading
@@ -128,34 +130,71 @@ class StationMapProvider extends ChangeNotifier {
   Timer? _markerLoadingTimer;
   int _currentMarkerIndex = 0;
 
-// Constructor here
-StationMapProvider(){
+  StationListProvider stationListProvider;
 
-  initializeMarkers();
+// Constructor here
+StationMapProvider({ required this.stationListProvider }){
+
+  // initializeMarkers();
+  stationListProvider.addListener(_onStationListChanged);
 }
 
 
 // --------------------------- functions start here ----------------------------------------
+void updateStationListProvider(StationListProvider newProvider){
+  stationListProvider.removeListener(_onStationListChanged);
+  stationListProvider = newProvider;
+  stationListProvider.addListener(_onStationListChanged);
+  _onStationListChanged();
+
+}
+
+void _onStationListChanged(){
+  if (!stationListProvider.isLoading && stationListProvider.stationList != null) {
+    initializeMarkers();
+    
+  }
+}
 
 // In your StationMapProvider constructor or initialization method
 void initializeMarkers() {
-  _markerDataList = [
-    MarkerData(
-      id: 'station_1',
-      position: LatLng(37.4219999, -122.0862462),
-      title: 'Station 1',
-      snippet: 'Fast charging available',
-      icon: BitmapDescriptor.defaultMarker,
-    ),
-    MarkerData(
-      id: 'station_2',
-      position: LatLng(37.4319999, -122.0962462),
-      title: 'Station 2',
-      snippet: 'Level 2 charging',
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    ),
-    // Add your other 3 markers...
-  ];
+
+  final customIcon = createLocalImageConfiguration(context, );
+  var stationMarkerList = stationListProvider!.stationList!.map((e) {
+    var lat = e.location!.split(',')[0];
+    var long = e.location!.split(',')[1];
+
+    return MarkerData(
+      id: e.id!.toString(),
+      position: LatLng(double.parse(lat), double.parse(long)),
+      title: "Station ${e.id}",
+      snippet: e.name ?? "",
+      icon: BitmapDescriptor.asset(ImageConfiguration(bundle: , assetName) ,
+    );
+  },).toList();
+
+  _markerDataList = stationMarkerList; 
+  var listLen = stationListProvider.stationList?.length;
+  // log("markers: $_markerDataList");
+  log("markers length: $listLen");
+
+  // _markerDataList = [
+  //   MarkerData(
+  //     id: 'station_1',
+  //     position: LatLng(37.4219999, -122.0862462),
+  //     title: 'Station 1',
+  //     snippet: 'Fast charging available',
+  //     icon: BitmapDescriptor.defaultMarker,
+  //   ),
+  //   MarkerData(
+  //     id: 'station_2',
+  //     position: LatLng(37.4319999, -122.0962462),
+  //     title: 'Station 2',
+  //     snippet: 'Level 2 charging',
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+  //   ),
+  //   // Add your other 3 markers...
+  // ];
 }
 
 

@@ -13,6 +13,8 @@ class StationListProvider extends ChangeNotifier {
 
   List<Data>? _stationList;
   List<Data>? get stationList => _stationList;
+
+
   bool isLoading = false;
 
   _getAllStations() async {
@@ -35,6 +37,7 @@ class StationListProvider extends ChangeNotifier {
         StationModel stationModel = StationModel.fromJson(response);
         if (stationModel.success!) {
           _stationList = stationModel.data;
+          notifyListeners();
         }
         log("station list: ${jsonEncode(response)}");
 

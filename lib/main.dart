@@ -47,7 +47,19 @@ void main() async{
         ChangeNotifierProvider(create:(context) => MainProvider(),),
         ChangeNotifierProvider(create:(context) => HomeProvider(),),
         ChangeNotifierProvider(create:(context) => StationListProvider(),),
-        ChangeNotifierProvider(create:(context) => StationMapProvider(),),
+        // ChangeNotifierProvider(create:(context) => StationMapProvider(),),
+        ChangeNotifierProxyProvider<StationListProvider, StationMapProvider>(
+          create: (context) => StationMapProvider(stationListProvider: context.read<StationListProvider>() ),
+          update: (context, stationListProvider, stationMapProvider) {
+            if (stationMapProvider != null) {
+              stationMapProvider.updateStationListProvider(stationListProvider);
+              return stationMapProvider;
+              
+            }
+            return StationMapProvider(stationListProvider: stationListProvider);
+          },
+          lazy: true,
+          )
       ],
       child: MyApp(),
     )
