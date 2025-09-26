@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:developer';
 import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home/station_map_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/utils/constants.dart';
@@ -26,18 +27,51 @@ class StationMapScreen extends StatefulWidget {
 class _StationMapScreenState extends State<StationMapScreen> {
   final Set<Marker> _markers = {};
   StationMapProvider? mapProvider;
+  StationListProvider? listProvider;
 
   @override
   void initState() {
     log("StationMapScreen initState called");
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      mapProvider = Provider.of<StationMapProvider>(context, listen: false);
+      // mapProvider = context.read<StationMapProvider>();
+    listProvider = Provider.of<StationListProvider>(context, listen: false);
+
+    // _setUpMarkerData();
+    },);
 
     super.initState();
   }
 
+  void _setUpMarkerData(StationMapProvider provider) async {
+    final customIcon = await BitmapDescriptor.asset(
+      createLocalImageConfiguration(context, size: Size(50, 50)),
+      '${Constants.iconPath}free_station_icon.png',
+    );
+
+    var stationMarkerList =
+        listProvider!.stationList!.map((e) {
+          var lat = e.location!.split(',')[0];
+          var long = e.location!.split(',')[1];
+
+          return MarkerData(
+            id: e.id!.toString(),
+            position: LatLng(double.parse(lat), double.parse(long)),
+            title: "Station ${e.id}",
+            snippet: e.name ?? "",
+            icon: customIcon,
+          );
+        }).toList();
+
+    provider.markerDataList = stationMarkerList;
+
+    // _markerDataList = stationMarkerList;
+  }
+
   @override
   Widget build(BuildContext context) {
-    mapProvider = Provider.of<StationMapProvider>(context);
-
+        final screenWidth = ScreenUtil().screenWidth;
+    final screenHeight = ScreenUtil().screenHeight;
     return Scaffold(
       backgroundColor: AppColor.white,
 
@@ -47,16 +81,16 @@ class _StationMapScreenState extends State<StationMapScreen> {
           return Stack(
             children: [
               GoogleMap(
-                
-
                 initialCameraPosition: value.initialPosition,
                 onMapCreated: (controller) {
                   value.onMapCreated(controller);
+
+                  _setUpMarkerData(value);
                   // Start loading markers after map is ready
                   Future.delayed(Duration(milliseconds: 1000), () {
                     if (!value.isDisposed) {
                       // Choose your loading approach:
-                      value.loadMarkersProgressively(); // Approach 1
+                      value.loadMarkersProgressively( ); // Approach 1
                       // OR
                       // provider.loadMarkersWithAnimation(); // Approach 3
                     }
@@ -76,12 +110,14 @@ class _StationMapScreenState extends State<StationMapScreen> {
                   value.onMapInteraction();
                 },
                 gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-                      // Factory<OneSequenceGestureRecognizer>(() => TapGestureRecognizer()),
-                      // Factory<OneSequenceGestureRecognizer>(() => ScaleGestureRecognizer()),
-                      // Factory<OneSequenceGestureRecognizer>(() => PanGestureRecognizer()),
-                      // Factory<OneSequenceGestureRecognizer>(() => VerticalDragGestureRecognizer()),
-                      // Factory<OneSequenceGestureRecognizer>(() => HorizontalDragGestureRecognizer()),
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                  // Factory<OneSequenceGestureRecognizer>(() => TapGestureRecognizer()),
+                  // Factory<OneSequenceGestureRecognizer>(() => ScaleGestureRecognizer()),
+                  // Factory<OneSequenceGestureRecognizer>(() => PanGestureRecognizer()),
+                  // Factory<OneSequenceGestureRecognizer>(() => VerticalDragGestureRecognizer()),
+                  // Factory<OneSequenceGestureRecognizer>(() => HorizontalDragGestureRecognizer()),
                 },
                 onCameraMove: (position) {
                   // if (!value.liteModeEnable) {
@@ -160,6 +196,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                 right: 0,
                 child: Column(
                   children: [
+                    // location and list icon 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: Row(
@@ -240,171 +277,180 @@ class _StationMapScreenState extends State<StationMapScreen> {
                         ],
                       ),
                     ),
-                    // Container(
-                    //   decoration: BoxDecoration(
-                    //     color: AppColor.white,
-                    //     borderRadius: BorderRadius.circular(16.r),
-                    //   ),
-                    //   margin: EdgeInsets.all(10.r),
-                    //   padding: EdgeInsets.all(15.r),
-                    //   child: Column(
+                    
+                    // marker window
+                    value.selectedMarker != null ?
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColor.white,
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      margin: EdgeInsets.all(10.r),
+                      padding: EdgeInsets.all(15.r),
+                      child: Column(
 
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: [
-                    //       // station name, address text
-                    //       Row(
-                    //         children: [
-                    //           Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Text(
-                    //                 "Station Name",
-                    //                 style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
-                    //               Text(
-                    //                 "Address",
-                    //                 style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
-                    //                 )],
-                    //           ),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // station name, address text
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    value.selectedMarker!.snippet ,
+                                    style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
+                                  SizedBox( 
+                                    width: screenWidth * 0.6,
+                                    child: Text(
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      listProvider!.stationList?.where((element) => element.id == int.parse(value.selectedMarker!.id) ,).first.address ?? "",
+                                      style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
+                                      ),
+                                  )],
+                              ),
 
-                    //           const Spacer(),
+                              const Spacer(),
 
-                    //           Container(
-                    //             height: 50,
-                    //             width: 50,
-                    //             decoration: BoxDecoration(
-                    //               color: AppColor.primary_900,
-                    //               shape: BoxShape.circle,
-                    //               gradient: LinearGradient(
-                    //                 colors: [
-                    //                   AppColor.primary_900.withAlpha(70),
-                    //                   AppColor.primary_900,
-                    //                 ],
-                    //                 begin: Alignment.topLeft,
-                    //                 end: Alignment.bottomRight,
-                    //               ),
-                    //             ),
-                    //             child: Transform.rotate(
-                    //               angle: 13.2,
-                    //               child: Icon(
-                    //                 Icons.navigation,
-                    //                 color: AppColor.white,
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  color: AppColor.primary_900,
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColor.primary_900.withAlpha(70),
+                                      AppColor.primary_900,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                ),
+                                child: Transform.rotate(
+                                  angle: 13.2,
+                                  child: Icon(
+                                    Icons.navigation,
+                                    color: AppColor.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
-                    //       SizedBox(height: 5.h,),
+                          SizedBox(height: 5.h,),
 
-                    //       // ratings stars
-                    //       Row(
-                    //         spacing: 5.w,
-                    //         children: [
-                    //           Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
-                    //           RatingBar.readOnly(
-                    //             filledIcon: Icons.star_rounded,
-                    //             filledColor: AppColor.primary_900,
-                    //             halfFilledColor: AppColor.primary_900,
-                    //             isHalfAllowed: true,
-                    //             size: 25,
-                    //             halfFilledIcon: Icons.star_half_rounded,
-                    //             emptyIcon: Icons.star_border_rounded,
-                    //             initialRating: 3.5,
-                    //             maxRating: 5,
-                    //           ),
-                    //           Text("(130 reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
-                    //         ],
-                    //       ),
+                          // ratings stars
+                          Row(
+                            spacing: 5.w,
+                            children: [
+                              Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
+                              RatingBar.readOnly(
+                                filledIcon: Icons.star_rounded,
+                                filledColor: AppColor.primary_900,
+                                halfFilledColor: AppColor.primary_900,
+                                isHalfAllowed: true,
+                                size: 25,
+                                halfFilledIcon: Icons.star_half_rounded,
+                                emptyIcon: Icons.star_border_rounded,
+                                initialRating: 3.5,
+                                maxRating: 5,
+                              ),
+                              Text("(130 reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
+                            ],
+                          ),
 
-                    //       SizedBox(height: 5.h,),
+                          SizedBox(height: 5.h,),
 
-                    //       // available, KM, duration text and icons
-                    //       Row(
-                    //         spacing: 10.w,
-                    //         children: [
-                    //           Container(
-                    //             decoration: BoxDecoration(
-                    //               color: AppColor.primary_900,
-                    //               borderRadius: BorderRadius.circular(6.r)
-                    //             ),
-                    //             padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                    //             child: Text("Available", style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
-                    //           ),
+                          // available, KM, duration text and icons
+                          Row(
+                            spacing: 10.w,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColor.primary_900,
+                                  borderRadius: BorderRadius.circular(6.r)
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                                child: Text("Available", style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
+                              ),
 
-                    //           Row(
-                    //             spacing: 3.w,
-                    //             crossAxisAlignment: CrossAxisAlignment.center,
-                    //             children: [
-                    //               Icon(Icons.location_on_rounded),
-                    //               Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                    //             ],
-                    //           ),
+                              Row(
+                                spacing: 3.w,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.location_on_rounded),
+                                  Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                                ],
+                              ),
 
-                    //           Row(
-                    //             spacing: 3.w,
-                    //             crossAxisAlignment: CrossAxisAlignment.center,
-                    //             children: [
-                    //               Icon(Icons.directions_car),
-                    //               Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                    //             ],
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       SizedBox(height: 5.h,),
+                              Row(
+                                spacing: 3.w,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.directions_car),
+                                  Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.h,),
 
-                    //       const Divider(thickness: 0.5,),
+                          const Divider(thickness: 0.5,),
 
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.end,
-                    //         children: [
-                    //           Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
-                    //           Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
-                    //         ],
-                    //       ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
+                              Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
+                            ],
+                          ),
 
-                    //       const Divider(thickness: 0.5,),
+                          const Divider(thickness: 0.5,),
 
-                    //       SizedBox(height: 5.h,),
+                          SizedBox(height: 5.h,),
 
-                    //       Row(
-                    //         spacing: 20.w,
-                    //         children: [
+                          Row(
+                            spacing: 20.w,
+                            children: [
 
-                    //           // view button
-                    //           Expanded(
-                    //             child: CustomButton(
-                    //               title: "View",
-                    //               padding: EdgeInsets.symmetric(vertical: 8.h),
-                    //               buttonColor: AppColor.white,
-                    //               border: Border.all(color: AppColor.primary_900, width: 2.w),
-                    //               borderRadius: 30.r,
-                    //               textColor: AppColor.primary_900,
-                    //               onTapCallback: () {
+                              // view button
+                              Expanded(
+                                child: CustomButton(
+                                  title: "View",
+                                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                                  buttonColor: AppColor.white,
+                                  border: Border.all(color: AppColor.primary_900, width: 2.w),
+                                  borderRadius: 30.r,
+                                  textColor: AppColor.primary_900,
+                                  onTapCallback: () {
 
-                    //               },
+                                  },
 
-                    //               ),
-                    //           ),
+                                  ),
+                              ),
 
-                    //           // book button
-                    //           Expanded(
-                    //             child: CustomButton(
-                    //               title: "Book",
-                    //               padding: EdgeInsets.symmetric(vertical: 8.h),
-                    //               buttonColor: AppColor.primary_900,
-                    //               textColor: AppColor.white,
-                    //               borderRadius: 30.r,
-                    //               onTapCallback: () {
+                              // book button
+                              Expanded(
+                                child: CustomButton(
+                                  title: "Book",
+                                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                                  buttonColor: AppColor.primary_900,
+                                  textColor: AppColor.white,
+                                  borderRadius: 30.r,
+                                  onTapCallback: () {
 
-                    //               },
+                                  },
 
-                    //               ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                                  ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ) : 
+                    SizedBox.shrink()
                   ],
                 ),
               ),
