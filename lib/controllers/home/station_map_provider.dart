@@ -167,7 +167,7 @@ class StationMapProvider extends ChangeNotifier {
       onTap: () {
         selectedMarker = markerData;
         log("station id: ${markerData.id}");
-        getStationStatus(markerData.id);
+        getRealTimeStationStatus(markerData.id);
 
         notifyListeners();
         // log("selected marker: $selectedMarker");
