@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/services/supabase_manager.dart';
+import 'package:ev_point/utils/helper.dart';
 import 'package:ev_point/utils/permission_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -164,10 +165,19 @@ class StationMapProvider extends ChangeNotifier {
       // infoWindow: InfoWindow(),
       icon: markerData.icon,
       // onTap: () => _onMarkerTapped(markerData),
-      onTap: () {
+      onTap: () async{
         selectedMarker = markerData;
         log("station id: ${markerData.id}");
-        getRealTimeStationStatus(markerData.id);
+
+
+        if (status != null) {
+        getRealTimeStationStatus(markerData.id);  
+        }
+        else{
+          getStationStatus(markerData.id);
+        }
+        
+        await getReview(markerData.id);
 
         notifyListeners();
         // log("selected marker: $selectedMarker");
@@ -182,6 +192,36 @@ class StationMapProvider extends ChangeNotifier {
     _markerLoadingTimer = Timer(Duration(milliseconds: 300), () {
       if (!_isDisposed) _loadNextMarker();
     });
+  }
+
+  Future<void> getStationStatus(String id) async{
+    try {
+      final response = await safeSupabaseCall(() async{
+        return await SupabaseManager.supabaseClient.from('station').select('status').eq('id', int.parse(id)).single();
+      },);
+      log("fetch single status value: ${response['data']['status']}");
+      status = response['data']['status'];
+    }
+    on PostgrestException catch (postEx) {
+      log("Postgre Exception: ${postEx.code}:${postEx.message}");
+    }
+    on Exception catch (e) {
+      log("Exception: $e");
+    }
+   }
+
+  Future<void> getReview(String stationId) async{
+    try {
+      final response = await safeSupabaseCall(() async{
+        return await SupabaseManager.supabaseClient
+          .from('Review')
+          .select('rate').eq('station_id', int.parse(stationId)).count(CountOption.exact);
+      },);
+      log("response: ${response['data'].data}, count: ${response['data'].count}");
+    } catch (e) {
+      log("Error: $e");
+      
+    }
   }
 
   void getRealTimeStationStatus(String stationId) {
