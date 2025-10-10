@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'package:dio/dio.dart';
 import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/services/supabase_manager.dart';
 import 'package:ev_point/utils/helper.dart';
@@ -28,8 +29,10 @@ class StationMapProvider extends ChangeNotifier {
   bool _trafficEnabled = false;
   bool _indoorViewEnabled = false;
   bool _isDisposed = false;
+  
   bool get isDisposed => _isDisposed;
   String? status;
+  String? _currentLocation;
 
   // Getters for UI features
   bool get myLocationEnabled => _myLocationEnabled;
@@ -46,6 +49,11 @@ class StationMapProvider extends ChangeNotifier {
 
   Completer<GoogleMapController>? _completer;
   Completer<GoogleMapController>? get completer => _completer;
+
+  String? distance;
+  String? duration;
+  String? rating;
+  String? reviewCount;
 
   static const CameraPosition _initialPosition = CameraPosition(
     target: LatLng(37.4219999, -122.0862462),
@@ -166,7 +174,7 @@ class StationMapProvider extends ChangeNotifier {
       icon: markerData.icon,
       // onTap: () => _onMarkerTapped(markerData),
       onTap: () async{
-        selectedMarker = markerData;
+        
         log("station id: ${markerData.id}");
 
 
@@ -174,11 +182,16 @@ class StationMapProvider extends ChangeNotifier {
         getRealTimeStationStatus(markerData.id);  
         }
         else{
-          getStationStatus(markerData.id);
+         await getStationStatus(markerData.id);
         }
-        
-        await getReview(markerData.id);
 
+        await Future.wait([
+         getReview(markerData.id),
+         getDistanceAndDuration("${markerData.position.latitude}, ${markerData.position.longitude}" , _currentLocation!)
+        ]);
+        log("parallel async functions completed.");
+
+        selectedMarker = markerData;
         notifyListeners();
         // log("selected marker: $selectedMarker");
       },
@@ -192,6 +205,35 @@ class StationMapProvider extends ChangeNotifier {
     _markerLoadingTimer = Timer(Duration(milliseconds: 300), () {
       if (!_isDisposed) _loadNextMarker();
     });
+  }
+
+  Future<void> getDistanceAndDuration(String destinationLatLong, String sourceLatLong) async{
+      final apiKey = 'AIzaSyA9M__GqBK-P8_vDqcAT7hCwwHS3dWtKzQ';
+      final origins = sourceLatLong;
+      final destinations = destinationLatLong;
+      // log("source: $sourceLatLong and destination: $destinationLatLong");
+
+      final url = 'https://maps.googleapis.com/maps/api/distancematrix/json'
+          '?origins=$origins&destinations=$destinations&key=$apiKey';
+
+      try {
+        var response = await Dio().get(url);
+        if (response.statusCode == 200) {
+          var data = response.data;
+          var distance = data['rows'][0]['elements'][0]['distance']['text'];
+          var duration = data['rows'][0]['elements'][0]['duration']['text'];
+
+          this.distance = distance;
+          this.duration = duration; 
+          log('Distance: $distance');
+          log('Duration: $duration');
+        } else {
+          log('Failed to get distance matrix data');
+        }
+      } catch (e) {
+        log('Error: $e');
+      }
+
   }
 
   Future<void> getStationStatus(String id) async{
@@ -217,7 +259,10 @@ class StationMapProvider extends ChangeNotifier {
           .from('Review')
           .select('rate').eq('station_id', int.parse(stationId)).count(CountOption.exact);
       },);
-      log("response: ${response['data'].data}, count: ${response['data'].count}");
+      rating = (response['data'].data as List<Map<String, dynamic>>).first['rate'].toString();
+      reviewCount = response['data'].count.toString();
+      log("rating: $rating, review count: $reviewCount");
+      // log("response: ${response['data'].data}, count: ${response['data'].count}");
     } catch (e) {
       log("Error: $e");
       
@@ -375,6 +420,8 @@ class StationMapProvider extends ChangeNotifier {
           forceLocationManager: false,
         ),
       ).timeout(Duration(seconds: 10));
+
+      _currentLocation = "${position.latitude}, ${position.longitude}";
 
       log('Location obtained: ${position.latitude}, ${position.longitude}');
 

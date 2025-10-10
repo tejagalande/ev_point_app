@@ -19,4 +19,5 @@ class AppRoutes {
   static const String viewDetailRoute = '/view_detail';
   static const String selfieRoute = '/selfie';
   static const String mainRoute = '/main';
+  static const String stationDetailRoute = '/stationDetail';
 }

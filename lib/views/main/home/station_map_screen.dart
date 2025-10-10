@@ -5,6 +5,8 @@ import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home/station_map_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
+import 'package:ev_point/routes/app_pages.dart';
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/main/home/home_screen.dart';
@@ -345,7 +347,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                           Row(
                             spacing: 5.w,
                             children: [
-                              Text("3.5", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
+                              Text(value.rating ?? "", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
                               RatingBar.readOnly(
                                 filledIcon: Icons.star_rounded,
                                 filledColor: AppColor.primary_900,
@@ -354,10 +356,10 @@ class _StationMapScreenState extends State<StationMapScreen> {
                                 size: 25,
                                 halfFilledIcon: Icons.star_half_rounded,
                                 emptyIcon: Icons.star_border_rounded,
-                                initialRating: 3.5,
+                                initialRating: double.parse(value.rating ?? '0.0'),
                                 maxRating: 5,
                               ),
-                              Text("(130 reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
+                              Text("(${value.reviewCount} reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
                             ],
                           ),
 
@@ -373,7 +375,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                                   borderRadius: BorderRadius.circular(6.r)
                                 ),
                                 padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                                child: Text("Available", style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
+                                child: Text(value.status ?? "" , style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
                               ),
 
                               Row(
@@ -381,7 +383,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Icons.location_on_rounded),
-                                  Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                                  Text(value.distance ?? "" , style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
                                 ],
                               ),
 
@@ -390,7 +392,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(Icons.directions_car),
-                                  Text("1.6KM", style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
+                                  Text(value.duration ?? "" , style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
                                 ],
                               ),
                             ],
@@ -425,7 +427,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                                   borderRadius: 30.r,
                                   textColor: AppColor.primary_900,
                                   onTapCallback: () {
-
+                                    Navigator.pushNamed(context, AppRoutes.stationDetailRoute);
                                   },
 
                                   ),
