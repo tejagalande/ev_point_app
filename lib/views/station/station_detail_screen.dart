@@ -73,7 +73,7 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
             // Station Details Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding:  EdgeInsets.fromLTRB(15.w, 15.h, 15.w, 1.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -176,12 +176,12 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
                               // view button
                               Expanded(
                                 child: CustomButton(
-                                  title: "View",
+                                  title: "Get Direction",
                                   padding: EdgeInsets.symmetric(vertical: 8.h),
-                                  buttonColor: AppColor.white,
-                                  border: Border.all(color: AppColor.primary_900, width: 2.w),
+                                  buttonColor: AppColor.primary_900,
+                                  
                                   borderRadius: 30.r,
-                                  textColor: AppColor.primary_900,
+                                  textColor: AppColor.white,
                                   onTapCallback: () {
                                     Navigator.pushNamed(context, AppRoutes.stationDetailRoute);
                                   },
@@ -192,10 +192,11 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
                               // book button
                               Expanded(
                                 child: CustomButton(
-                                  title: "Book",
+                                  border: Border.all(color: AppColor.primary_900, width: 2.w),
+                                  title: "Route Planner",
                                   padding: EdgeInsets.symmetric(vertical: 8.h),
-                                  buttonColor: AppColor.primary_900,
-                                  textColor: AppColor.white,
+                                  buttonColor: AppColor.white,
+                                  textColor: AppColor.primary_900,
                                   borderRadius: 30.r,
                                   onTapCallback: () {
 
@@ -211,23 +212,33 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
                 ),
               ),
             ),
+
+
             // Tab Bar
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _StickyTabBarDelegate(
-                TabBar(
-                  controller: _tabController,
-                  // isScrollable: true,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor: Colors.green,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.green,
-                  tabs: const [
-                    Tab(text: 'Info'),
-                    Tab(text: 'Chargers'),
-                    Tab(text: 'Check-ins'),
-                    Tab(text: 'Reviews'),
-                  ],
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              sliver: SliverPersistentHeader(
+                pinned: true,
+                delegate: _StickyTabBarDelegate(
+                  TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    // padding: EdgeInsets.symmetric(horizontal: 15.w),
+              
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: AppColor.primary_900,
+                    tabAlignment: TabAlignment.start,
+                    indicatorAnimation: TabIndicatorAnimation.elastic,
+                    unselectedLabelColor: AppColor.greyScale500,
+                    labelStyle: TextStyle(fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w500, fontSize: 18.sp),
+                    indicatorColor: AppColor.primary_900,
+                    tabs: const [
+                      Tab(text: 'Info'),
+                      Tab(text: 'Chargers'),
+                      Tab(text: 'Check-ins'),
+                      Tab(text: 'Reviews'),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -244,10 +255,11 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // About Section
-          const Text(
+           Text(
             'About',
             style: TextStyle(
-              fontSize: 18,
+              fontFamily: Constants.urbanistFont,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
