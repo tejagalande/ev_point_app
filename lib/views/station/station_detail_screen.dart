@@ -7,6 +7,7 @@ import 'package:ev_point/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 
 class StationDetailScreen extends StatefulWidget {
   const StationDetailScreen({super.key});
@@ -264,25 +265,35 @@ class _StationDetailScreenState extends State<StationDetailScreen> with SingleTi
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labor et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+
+          // about text
+          ReadMoreText(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labor et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
             style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
+              fontSize: 18,
+              fontFamily: Constants.urbanistFont,
+              color: AppColor.black,
+              height: 1.5,
+            ),
+            trimMode: TrimMode.Line,
+            trimLines: 3,
+            trimCollapsedText: "Read more...", 
+            moreStyle:  TextStyle(
+              fontSize: 18,
+              fontFamily: Constants.urbanistFont,
+              color: AppColor.primary_900,
+              height: 1.5,
+            ),
+            trimExpandedText: " Show less",
+            lessStyle: TextStyle(
+              fontSize: 18,
+              fontFamily: Constants.urbanistFont,
+              color: AppColor.primary_900,
               height: 1.5,
             ),
           ),
-          GestureDetector(
-            onTap: () {},
-            child: const Text(
-              'Read more',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.green,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+       
+
           const SizedBox(height: 24),
 
           // Parking and Payment Info
