@@ -8,6 +8,7 @@ import 'package:ev_point/controllers/onboardProfile_provider.dart';
 import 'package:ev_point/controllers/onboard_provider.dart';
 import 'package:ev_point/controllers/selfieCamera_provider.dart';
 import 'package:ev_point/controllers/signup_provider.dart';
+import 'package:ev_point/controllers/station/station_detail_provider.dart';
 import 'package:ev_point/services/supabase_manager.dart';
 import 'package:ev_point/utils/shared_pref.dart';
 import 'package:ev_point/utils/size_config.dart';
@@ -59,7 +60,11 @@ void main() async{
             return StationMapProvider(stationListProvider: stationListProvider);
           },
           lazy: true,
+          ),
+          ChangeNotifierProvider(
+            create:(context) => StationDetailProvider(),
           )
+
       ],
       child: MyApp(),
     )
