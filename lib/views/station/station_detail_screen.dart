@@ -4,7 +4,9 @@ import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/station/tab/charger_tab.dart';
+import 'package:ev_point/views/station/tab/checkin_tab.dart';
 import 'package:ev_point/views/station/tab/info_tab.dart';
+import 'package:ev_point/views/station/tab/review_tab.dart';
 import 'package:ev_point/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -37,46 +39,7 @@ class _StationDetailScreenState extends State<StationDetailScreen>
   
     return Scaffold(
       backgroundColor: AppColor.white,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Divider(thickness: 0.5,),
-          Padding(
-            padding: EdgeInsets.only(bottom: 10.h, left: 10.w, right: 10.w),
-            child: Row(
-              spacing: 15.w,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10).r,
-                    decoration: BoxDecoration(
-                      color: AppColor.primary_900.withAlpha(20),
-                      shape: BoxShape.circle,
-                  
-                    ),
-                    child: SvgPicture.asset("${Constants.iconPath}scan_icon.svg", height: 30,)),
-                ),
-                Expanded(
-                  child: CustomButton(
-                    title: "Book",
-                    boldText: true,
-                    buttonColor: AppColor.primary_900,
-                    textColor: AppColor.white,
-                    borderRadius: 25.r,
-                    onTapCallback: () {
-                      
-                    },
-                    ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+      
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -306,156 +269,15 @@ class _StationDetailScreenState extends State<StationDetailScreen>
             // Chargers Tab
             ChargerTab(),
             // Check-ins Tab
-            _buildCheckInsTab(),
+            CheckinTab(),
             // Reviews Tab
-            _buildReviewsTab(),
+            ReviewTab(),
           ],
         ),
       ),
     );
   }
 }
-
-Widget _buildCheckInsTab() {
-  return ListView.builder(
-    padding: const EdgeInsets.all(20),
-    itemCount: 10,
-    itemBuilder: (context, index) {
-      return Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Colors.green.shade100,
-                child: Text(
-                  'U${index + 1}',
-                  style: TextStyle(
-                    color: Colors.green.shade700,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'User ${index + 1}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Checked in ${index + 1} hours ago',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Charging at station ${(index % 6) + 1}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey.shade500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.more_vert, color: Colors.grey.shade400),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-Widget _buildReviewsTab() {
-  return ListView.builder(
-    padding: const EdgeInsets.all(20),
-    itemCount: 8,
-    itemBuilder: (context, index) {
-      return Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.green.shade100,
-                    child: Text(
-                      'R${index + 1}',
-                      style: TextStyle(
-                        color: Colors.green.shade700,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Reviewer ${index + 1}',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${index + 1} days ago',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: List.generate(5, (starIndex) {
-                      return Icon(
-                        starIndex < 4 ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                        size: 16,
-                      );
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Great charging station! Clean facilities and fast charging speeds. Would definitely recommend to other EV owners.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black87,
-                  height: 1.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
 
 
 // Custom delegate for sticky tab bar

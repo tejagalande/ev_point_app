@@ -1,6 +1,7 @@
 import 'package:ev_point/controllers/station/station_detail_provider.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
+import 'package:ev_point/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,46 @@ class _InfoTabState extends State<InfoTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white,
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Divider(thickness: 0.5,),
+          Padding(
+            padding: EdgeInsets.only(bottom: 10.h, left: 10.w, right: 10.w),
+            child: Row(
+              spacing: 15.w,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10).r,
+                    decoration: BoxDecoration(
+                      color: AppColor.primary_900.withAlpha(20),
+                      shape: BoxShape.circle,
+                  
+                    ),
+                    child: SvgPicture.asset("${Constants.iconPath}scan_icon.svg", height: 30,)),
+                ),
+                Expanded(
+                  child: CustomButton(
+                    title: "Book",
+                    boldText: true,
+                    buttonColor: AppColor.primary_900,
+                    textColor: AppColor.white,
+                    borderRadius: 25.r,
+                    onTapCallback: () {
+                      
+                    },
+                    ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Column(

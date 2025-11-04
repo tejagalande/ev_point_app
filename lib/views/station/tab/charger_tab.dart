@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
+import 'package:ev_point/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,71 +29,88 @@ class _ChargerTabState extends State<ChargerTab> {
           // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           decoration: BoxDecoration(
             border: Border(left: BorderSide(color: AppColor.primary_900, width: 4.w),),
-            color: AppColor.greyScale200,
+            color: AppColor.greyScale50,
             borderRadius: BorderRadius.circular(15).r
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+            padding:  EdgeInsets.all(16).r ,
+            child: Column(
+              //  mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(Icons.ev_station, color: Colors.green, size: 28),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Charger ${index + 1}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Tesla Supercharger V3',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '250 kW',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: index % 3 == 0 ? Colors.green : Colors.orange,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    index % 3 == 0 ? 'Available' : 'In Use',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("24 hours"),
+                    Row(
+                      spacing: 10.w,
+                      children: [
+                        Text("Available"),
+                        Container(
+                          height: 10,
+                          width: 10,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColor.primary_900
+                          ),
+                        )
+                      ],
                     ),
-                  ),
+                  ],
                 ),
+
+                Divider(thickness: 0.5,),
+
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    log("Row width: ${constraints.maxWidth / 2.5 } ");
+                    return Row(
+                  spacing: 10.w,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: constraints.maxWidth / 2.5,
+                          child: Text(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            "Tesla (plug) . AC/DC", style: TextStyle(fontFamily: Constants.urbanistFont, color: AppColor.greyScale700, fontSize: 16.sp),)),
+                        Icon(Icons.power_off)
+                      ],
+                    ),
+                
+                    SizedBox(
+                      height: 30,
+                      child: VerticalDivider(thickness: 2,)),
+                
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Max power", style: TextStyle(fontFamily: Constants.urbanistFont, color: AppColor.greyScale700, fontSize: 16.sp),),
+                        Text("100 kw", style: TextStyle(fontFamily: Constants.urbanistFont, color: AppColor.greyScale900, fontWeight: FontWeight.bold ,fontSize: 32.sp),)
+                      ],
+                    ),
+                  ],
+                );
+                  },
+                ),
+
+                 Divider(thickness: 0.5,),
+
+
+                CustomButton(title: "Book",
+
+                buttonColor: AppColor.primary_900,
+                textColor: AppColor.white,
+                borderRadius: 25.r,
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                onTapCallback: () {
+                  
+                },
+                )
               ],
             ),
           ),
