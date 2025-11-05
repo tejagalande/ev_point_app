@@ -1,5 +1,8 @@
+import 'package:ev_point/controllers/book/charger_list_provider.dart';
 import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/views/auth/auth_option_screen.dart';
+import 'package:ev_point/views/book/book_station_screen.dart';
+import 'package:ev_point/views/book/vehicle_list_screen.dart';
 import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
 import 'package:ev_point/views/onboard/splash_screen.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 
 import '../views/auth/otp_screen.dart';
 import '../views/auth/signup_screen.dart';
+import '../views/book/charger_list_screen.dart';
 
 class AppPages {
 
@@ -25,5 +29,8 @@ class AppPages {
     AppRoutes.personalizeVehicleRoute : (context) => PersonalizeScreen(),
     AppRoutes.mainRoute : (context) => MainScreen(), 
     AppRoutes.stationDetailRoute: (context) => StationDetailScreen(),
+    AppRoutes.vehicleListRoute :(context) => VehicleListScreen(),
+    AppRoutes.chargerListRoute :(context) => ChargerListScreen(),
+    AppRoutes.bookStationRoute :(context) => BookStationScreen(),
   };
 }
