@@ -23,5 +23,7 @@ class AppRoutes {
   static const String vehicleListRoute = '/vehicleList' ;
   static const String chargerListRoute = '/chargerList' ;
   static const String bookStationRoute = '/bookStation' ;
+  static const String paymentMethodRoute = '/paymentMethod' ;
+  static const String reviewSummaryRoute = '/reviewSummary' ;
   
 }

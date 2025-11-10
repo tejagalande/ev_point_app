@@ -2,6 +2,8 @@ import 'package:ev_point/controllers/book/charger_list_provider.dart';
 import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/views/auth/auth_option_screen.dart';
 import 'package:ev_point/views/book/book_station_screen.dart';
+import 'package:ev_point/views/book/payment_method_screen.dart';
+import 'package:ev_point/views/book/review_summary_screen.dart';
 import 'package:ev_point/views/book/vehicle_list_screen.dart';
 import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
@@ -32,5 +34,7 @@ class AppPages {
     AppRoutes.vehicleListRoute :(context) => VehicleListScreen(),
     AppRoutes.chargerListRoute :(context) => ChargerListScreen(),
     AppRoutes.bookStationRoute :(context) => BookStationScreen(),
+    AppRoutes.paymentMethodRoute :(context) => PaymentMethodScreen(),
+      AppRoutes.reviewSummaryRoute :(context) => ReviewSummaryScreen()
   };
 }

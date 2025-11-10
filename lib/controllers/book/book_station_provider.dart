@@ -22,7 +22,7 @@ class BookStationProvider extends ChangeNotifier {
 
   // Initialize with default values
   BookStationProvider() {
-    _selectedTime = const TimeOfDay(hour: 10, minute: 0);
+    // _selectedTime = const TimeOfDay(hour: 10, minute: 0);
   }
 
   // Select date
@@ -48,7 +48,7 @@ class BookStationProvider extends ChangeNotifier {
 
   // Get formatted time string
   String getFormattedTime() {
-    if (_selectedTime == null) return '10:00';
+    if (_selectedTime == null) return '';
     
     final hour = _selectedTime!.hourOfPeriod == 0 
         ? 12 

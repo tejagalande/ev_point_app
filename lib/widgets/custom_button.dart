@@ -2,6 +2,7 @@ import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
@@ -19,12 +20,13 @@ class CustomButton extends StatefulWidget {
   Color? boxShadowColor;
   BoxBorder? border;
   EdgeInsetsGeometry? padding;
+  double? fontSize;
   
 
   void Function()? onTapCallback;
 
 
-  CustomButton({super.key, required this.title, this.isBorder, this.boldText, this.buttonColor,this.padding ,this.textColor, this.borderRadius, this.isShadow, this.margin , this.isPrefixIcon , this.onTapCallback, this.blurRadius, this.boxShadowColor, this.border, });
+  CustomButton({super.key, required this.title, this.isBorder, this.fontSize ,this.boldText, this.buttonColor,this.padding ,this.textColor, this.borderRadius, this.isShadow, this.margin , this.isPrefixIcon , this.onTapCallback, this.blurRadius, this.boxShadowColor, this.border, });
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -58,7 +60,9 @@ class _CustomButtonState extends State<CustomButton> {
             widget.isPrefixIcon != null && widget.isPrefixIcon == true ? SvgPicture.asset("${Constants.iconPath}navigation_bold.svg") : SizedBox.shrink(),
             Text(
               widget.title,
-              style: TextStyle(fontFamily: Constants.urbanistFont,  fontWeight: widget.boldText == true && widget.boldText != null ? FontWeight.w800 : FontWeight.w600, fontSize: 16 , color: widget.textColor ),
+              style: TextStyle(fontFamily: Constants.urbanistFont, 
+              fontWeight: widget.boldText == true && widget.boldText != null ? FontWeight.w800 : FontWeight.w600, 
+              fontSize: widget.fontSize ?? 16.sp , color: widget.textColor ),
               
               ),
           ],
