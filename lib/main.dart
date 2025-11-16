@@ -11,7 +11,6 @@ import 'package:ev_point/controllers/signup_provider.dart';
 import 'package:ev_point/controllers/station/station_detail_provider.dart';
 import 'package:ev_point/services/supabase_manager.dart';
 import 'package:ev_point/utils/shared_pref.dart';
-import 'package:ev_point/utils/size_config.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

@@ -11,6 +11,7 @@ import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/main/home/home_screen.dart';
 import 'package:ev_point/widgets/custom_button.dart';
+import 'package:ev_point/widgets/route_navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -315,29 +316,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
 
                               const Spacer(),
 
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  color: AppColor.primary_900,
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColor.primary_900.withAlpha(70),
-                                      AppColor.primary_900,
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                ),
-                                child: Transform.rotate(
-                                  angle: 13.2,
-                                  child: Icon(
-                                    Icons.navigation,
-                                    color: AppColor.white,
-                                  ),
-                                ),
-                              ),
+                              RouteNavigator(),
                             ],
                           ),
 

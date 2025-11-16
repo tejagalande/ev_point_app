@@ -11,6 +11,7 @@ import 'package:ev_point/views/onboard/splash_screen.dart';
 import 'package:ev_point/views/personalize/personalize_screen.dart';
 import 'package:ev_point/views/profile/onboard_profile_screen.dart';
 import 'package:ev_point/views/profile/selfieCamera_screen.dart';
+import 'package:ev_point/views/save_station/saved_stations_screen.dart';
 import 'package:ev_point/views/station/station_detail_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +36,7 @@ class AppPages {
     AppRoutes.chargerListRoute :(context) => ChargerListScreen(),
     AppRoutes.bookStationRoute :(context) => BookStationScreen(),
     AppRoutes.paymentMethodRoute :(context) => PaymentMethodScreen(),
-      AppRoutes.reviewSummaryRoute :(context) => ReviewSummaryScreen()
+      AppRoutes.reviewSummaryRoute :(context) => ReviewSummaryScreen(),
+    AppRoutes.savedStationRoute :(context) => SavedStationsScreen()  
   };
 }
