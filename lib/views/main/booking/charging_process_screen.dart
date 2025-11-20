@@ -90,83 +90,87 @@ class ChargingProcessScreen extends StatelessWidget {
                     SizedBox(height: 32.h),
               
                     // Energy circular card
-                    Container(
-                      width: 230.w, 
-                      height: 230.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColor.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColor.primary_900.withAlpha(100),
-                            blurRadius: 30.r,
-                            spreadRadius: 2.r,
-                          ),
-                        ],
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 230.w,
-                            height: 230.w,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColor.primary_900,
-                                width: 3.w,
-                              ),
+                    InkWell(
+                      onTap:()=> provider.chargingComplete(context),
+                      child: Container(
+                        width: 230.w, 
+                        height: 230.w,
+                        
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColor.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColor.primary_900.withAlpha(100),
+                              blurRadius: 30.r,
+                              spreadRadius: 2.r,
                             ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 12.h),
-                              SvgPicture.asset("${Constants.iconPath}flash_icon.svg"),
-                              
-                              // charging power digit and unit
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    provider.energyKwh.toStringAsFixed(0),
-                                    style: TextStyle(
-                                      fontSize: 70.sp,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: Constants.urbanistFont,
-                                      color: AppColor.greyScale900,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6.w),
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 6.h),
-                                    child: Text(
-                                      'kWh',
-                                      style: TextStyle(
-                                        fontFamily: Constants.urbanistFont,
-                                        fontSize: 24.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColor.greyScale800,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              
-
-                              // energy text
-                              Text(
-                                'Energy',
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontFamily: Constants.urbanistFont,
-                                  color: AppColor.greyScale600,
+                          ],
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 230.w,
+                              height: 230.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColor.primary_900,
+                                  width: 3.w,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 12.h),
+                                SvgPicture.asset("${Constants.iconPath}flash_icon.svg"),
+                                
+                                // charging power digit and unit
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      provider.energyKwh.toStringAsFixed(0),
+                                      style: TextStyle(
+                                        fontSize: 70.sp,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: Constants.urbanistFont,
+                                        color: AppColor.greyScale900,
+                                      ),
+                                    ),
+                                    SizedBox(width: 6.w),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 6.h),
+                                      child: Text(
+                                        'kWh',
+                                        style: TextStyle(
+                                          fontFamily: Constants.urbanistFont,
+                                          fontSize: 24.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColor.greyScale800,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                
+                      
+                                // energy text
+                                Text(
+                                  'Energy',
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontFamily: Constants.urbanistFont,
+                                    color: AppColor.greyScale600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
               
