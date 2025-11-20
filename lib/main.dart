@@ -4,6 +4,7 @@ import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home/station_map_provider.dart';
 import 'package:ev_point/controllers/home_provider.dart';
 import 'package:ev_point/controllers/main_provider.dart';
+import 'package:ev_point/controllers/my_booking/booking_provider.dart';
 import 'package:ev_point/controllers/onboardProfile_provider.dart';
 import 'package:ev_point/controllers/onboard_provider.dart';
 import 'package:ev_point/controllers/selfieCamera_provider.dart';
@@ -62,7 +63,10 @@ void main() async{
           ),
           ChangeNotifierProvider(
             create:(context) => StationDetailProvider(),
-          )
+          ),
+          ChangeNotifierProvider(
+            create: (context) => BookingProvider()..initializeBookings(),
+          ),
 
       ],
       child: MyApp(),

@@ -40,6 +40,16 @@ class Constants{
   // static var anonKey = dotenv.env["ANON_API_KEY"];
   static const supabaseUrl = "https://wpsmdogwuajwcmrtbqol.supabase.co";
 
+  static const List<String> bookingTabs = ['Upcoming', 'Completed', 'Canceled'];
+  
+  static const Map<String, String> connectorTypes = {
+    'J1772': 'J1772',
+    'Mennekes': 'Mennekes',
+    'CHAdeMO': 'CHAdeMO',
+    'CCS1': 'CCS1',
+    'Tesla (Plug)': 'Tesla',
+  };
+  
 
   // color gradients
   static LinearGradient mapSearchLinearGradient = LinearGradient(

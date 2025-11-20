@@ -11,7 +11,9 @@ import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/views/main/home/home_screen.dart';
 import 'package:ev_point/widgets/custom_button.dart';
+import 'package:ev_point/widgets/rating_star.dart';
 import 'package:ev_point/widgets/route_navigator.dart';
+import 'package:ev_point/widgets/station_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -323,59 +325,12 @@ class _StationMapScreenState extends State<StationMapScreen> {
                           SizedBox(height: 5.h,),
 
                           // ratings stars
-                          Row(
-                            spacing: 5.w,
-                            children: [
-                              Text(value.rating ?? "", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w600 ,color: AppColor.greyScale700),),
-                              RatingBar.readOnly(
-                                filledIcon: Icons.star_rounded,
-                                filledColor: AppColor.primary_900,
-                                halfFilledColor: AppColor.primary_900,
-                                isHalfAllowed: true,
-                                size: 25,
-                                halfFilledIcon: Icons.star_half_rounded,
-                                emptyIcon: Icons.star_border_rounded,
-                                initialRating: double.parse(value.rating ?? '0.0'),
-                                maxRating: 5,
-                              ),
-                              Text("(${value.reviewCount} reviews)", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,fontWeight: FontWeight.w500 ,color: AppColor.greyScale600),)
-                            ],
-                          ),
+                          RatingStar(rating: '4.5', ratingCount: '120',),
 
                           SizedBox(height: 5.h,),
 
                           // available, KM, duration text and icons
-                          Row(
-                            spacing: 10.w,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColor.primary_900,
-                                  borderRadius: BorderRadius.circular(6.r)
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                                child: Text(value.status ?? "" , style: TextStyle(color: AppColor.white, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),),
-                              ),
-
-                              Row(
-                                spacing: 3.w,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.location_on_rounded),
-                                  Text(value.distance ?? "" , style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                                ],
-                              ),
-
-                              Row(
-                                spacing: 3.w,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.directions_car),
-                                  Text(value.duration ?? "" , style: TextStyle(color: AppColor.greyScale700, fontSize: 10.sp , fontFamily: Constants.urbanistFont, fontWeight: FontWeight.w600 ),)
-                                ],
-                              ),
-                            ],
-                          ),
+                          StationData(stationDistanceInKm: '1.6', stationDuration: '5min', stationStatus: 'Available',),
                           SizedBox(height: 5.h,),
 
                           const Divider(thickness: 0.5,),
