@@ -6,6 +6,7 @@ import '../../../../controllers/my_booking/booking_provider.dart';
 import '../../../../utils/constants.dart';
 import '../../../../utils/theme/app_color.dart';
 import '../../../../widgets/booking_card.dart';
+import '../widgets/cancel_booking_bottom_sheet.dart';
 
 class UpcomingBookingsScreen extends StatefulWidget {
   const UpcomingBookingsScreen({Key? key}) : super(key: key);
@@ -86,74 +87,32 @@ class _UpcomingBookingsScreenState extends State<UpcomingBookingsScreen> {
                     itemBuilder: (context, index) {
                       final booking = upcomingBookings[index];
                       return BookingCard(
+                        
                         booking: booking,
+                        tabIndex: bookingProvider.selectedTabIndex,
                         onView: () {
                           // Navigate to booking details
                         },
                         onCancel: () {
-                          showDialog(
+                          showModalBottomSheet(
                             context: context,
+                            backgroundColor: Colors.transparent,
                             builder:
-                                (context) => AlertDialog(
-                                  title: Text(
-                                    'Cancel Booking',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: Constants.urbanistFont,
-                                    ),
-                                  ),
-                                  content: Text(
-                                    'Are you sure you want to cancel this booking?',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontFamily: Constants.urbanistFont,
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed:
-                                          () => Navigator.of(context).pop(),
-                                      child: Text(
-                                        'No',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: AppColor.greyScale900,
-                                          fontFamily: Constants.urbanistFont,
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        bookingProvider.cancelBooking(
-                                          booking.id,
-                                        );
-                                        Navigator.of(context).pop();
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Booking canceled successfully',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    Constants.urbanistFont,
-                                              ),
-                                            ),
-                                            backgroundColor: AppColor.green,
+                                (context) => CancelBookingBottomSheet(
+                                  onCancel: () {
+                                    bookingProvider.cancelBooking(booking.id);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Booking canceled successfully',
+                                          style: TextStyle(
+                                            fontFamily: Constants.urbanistFont,
                                           ),
-                                        );
-                                      },
-                                      child: Text(
-                                        'Yes',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: AppColor.red,
-                                          fontFamily: Constants.urbanistFont,
                                         ),
+                                        backgroundColor: AppColor.green,
                                       ),
-                                    ),
-                                  ],
+                                    );
+                                  },
                                 ),
                           );
                         },

@@ -47,6 +47,7 @@ class CompletedBookingsScreen extends StatelessWidget {
                       final booking = completedBookings[index];
                       return BookingCard(
                         booking: booking,
+                        tabIndex: bookingProvider.selectedTabIndex,
                         onView: () {
                           // Navigate to booking details
                         },

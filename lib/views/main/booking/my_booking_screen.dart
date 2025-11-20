@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../controllers/my_booking/booking_provider.dart';
@@ -61,19 +62,35 @@ class _MyBookingScreenContentState extends State<_MyBookingScreenContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
+        leading: Padding(
+            padding: EdgeInsets.all(10).r,
+            child: SvgPicture.asset("${Constants.iconPath}logo_evPoint.svg"),
+          ),
         title: Text(
           'My Booking',
           style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
             color: AppColor.greyScale900,
             fontFamily: Constants.urbanistFont,
           ),
         ),
+        actions: [
+            GestureDetector(
+              onTap: () {}, 
+              child: SvgPicture.asset(
+                "${Constants.iconPath}search.svg",
+                color: AppColor.greyScale900,
+                height: 30,
+              ),
+            ),
+          ],
+          actionsPadding: EdgeInsets.symmetric(horizontal: 10.w),
         backgroundColor: AppColor.white,
         elevation: 0,
-        centerTitle: true,
+        
       ),
       body: Column(
         children: [

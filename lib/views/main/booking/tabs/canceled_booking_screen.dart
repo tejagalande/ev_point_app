@@ -47,24 +47,12 @@ class CanceledBookingsScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final booking = canceledBookings[index];
                       return BookingCard(
+                        tabIndex: bookingProvider.selectedTabIndex,
                         booking: booking,
                         onView: () {
                           // Navigate to booking details
                         },
-                        onBookAgain: () {
-                          bookingProvider.bookAgain(booking.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Booking created successfully',
-                                style: TextStyle(
-                                  fontFamily: Constants.urbanistFont,
-                                ),
-                              ),
-                              backgroundColor: AppColor.green,
-                            ),
-                          );
-                        },
+   
                       );
                     },
                   ),

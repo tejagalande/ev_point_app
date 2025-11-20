@@ -1,24 +1,26 @@
+import 'package:ev_point/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/book/booking_model.dart';
 import '../utils/constants.dart';
 import '../utils/theme/app_color.dart';
 
-
 class BookingCard extends StatelessWidget {
   final BookingModel booking;
   final VoidCallback? onView;
   final VoidCallback? onCancel;
   final VoidCallback? onBookAgain;
-  
+  final int tabIndex;
+
   const BookingCard({
-    Key? key,
+    super.key,
     required this.booking,
     this.onView,
     this.onCancel,
     this.onBookAgain,
-  }) : super(key: key);
-  
+    required this.tabIndex
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,64 +29,89 @@ class BookingCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.greyScale50,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColor.greyScale200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Date and Time
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                Icons.calendar_today,
-                size: 16.w,
-                color: AppColor.greyScale900,
+              Column(
+                spacing: 10.h,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Icon(
+                  //   Icons.calendar_today,
+                  //   size: 16.w,
+                  //   color: AppColor.greyScale900,
+                  // ),
+                  // SizedBox(width: 8.w),
+                  Text(
+                    booking.formattedDate,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.greyScale800,
+                      fontFamily: Constants.urbanistFont,
+                    ),
+                  ),
+                  // SizedBox(width: 16.w),
+                  // Icon(Icons.access_time, size: 16.w, color: AppColor.greyScale900),
+                  // SizedBox(width: 8.w),
+                  Text(
+                    booking.formattedTime,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.greyScale800,
+                      fontFamily: Constants.urbanistFont,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 8.w),
-              Text(
-                booking.formattedDate,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.greyScale700,
-                  fontFamily: Constants.urbanistFont,
+
+              tabIndex == 0 ? Row(
+                spacing: 10.w,
+                children: [
+                  Text("Remind Me",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColor.greyScale700,
+                    fontFamily: Constants.urbanistFont,
+                  ),),
+                  Switch(
+                    trackColor: WidgetStatePropertyAll(AppColor.primary_900),
+                    // padding: EdgeInsets.only( right: 20.w),
+                    value: true, 
+                    onChanged:(value) {
+                    
+                  },)
+                ],
+              ) : Container(
+                padding: EdgeInsets.all(5).r,
+                decoration: BoxDecoration(
+                  color: AppColor.primary_900,
+                  
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-              ),
-              SizedBox(width: 16.w),
-              Icon(
-                Icons.access_time,
-                size: 16.w,
-                color: AppColor.greyScale900,
-              ),
-              SizedBox(width: 8.w),
-              Text(
-                booking.formattedTime,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.greyScale700,
+                child: Text("Available", style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColor.white,
                   fontFamily: Constants.urbanistFont,
-                ),
-              ),
+                ),))
             ],
           ),
           SizedBox(height: 12.h),
-          
+          Divider(thickness: 0.5),
+
           // Location
           Row(
             children: [
-              Icon(
-                Icons.location_on,
-                size: 16.w,
-                color: AppColor.greyScale900,
-              ),
+              Icon(Icons.location_on, size: 16.w, color: AppColor.greyScale900),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
@@ -112,7 +139,9 @@ class BookingCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 12.h),
-          
+
+          Divider(thickness: 0.5),
+
           // Charger Details
           Container(
             padding: EdgeInsets.all(12.w),
@@ -137,7 +166,8 @@ class BookingCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      Constants.connectorTypes[booking.connectorType] ?? booking.connectorType,
+                      Constants.connectorTypes[booking.connectorType] ??
+                          booking.connectorType,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
@@ -147,7 +177,7 @@ class BookingCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 // Max Power
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +202,7 @@ class BookingCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 // Duration
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +227,7 @@ class BookingCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 // Price
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,29 +255,88 @@ class BookingCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
+          Divider(thickness: 0.5),
+
+          // Action buttons
+          if (onView != null || onCancel != null || onBookAgain != null) ...[
+            SizedBox(height: 16.h),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 10.w,
+              children: [
+                if (onCancel != null) ...[
+                  // SizedBox(width: 12.w),
+                  Expanded(
+                    child: CustomButton(
+                      onTapCallback: onCancel,
+                      title: 'Cancel Booking',
+                      buttonColor: AppColor.white,
+                      padding: EdgeInsets.symmetric(vertical: 7.h ),
+                      textColor: AppColor.primary_900,
+                      fontSize: 16.sp,
+                      borderRadius: 25.r,
+                      border: Border.all(color: AppColor.primary_900, width: 2),
+                    ),
+                  ),
+                ],
+
+                if (onView != null)
+                  Expanded(
+                    child: CustomButton(
+                      padding: EdgeInsets.symmetric(vertical: 7.h),
+                      onTapCallback: onView,
+                      title: 'View',
+                      buttonColor: tabIndex == 0 ? AppColor.primary_900 : AppColor.white,
+                      textColor: tabIndex == 0 ? AppColor.white : AppColor.primary_900, 
+                      border: tabIndex == 1 || tabIndex == 2 ? Border.all(color: AppColor.primary_900, width: 2) : null,
+                      fontSize: 16.sp,
+                      borderRadius: 25.r,
+                    ),
+                  ),
+
+                if (onBookAgain != null) ...[
+                  // SizedBox(width: 12.w),
+                  Expanded(
+                    child: CustomButton(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 8.h,
+                      ),
+                      onTapCallback: onBookAgain,
+                      title: 'Book Again',
+                      buttonColor: AppColor.primary_900,
+                      textColor: AppColor.white,
+                      fontSize: 16.sp,
+                      borderRadius: 25.r,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+
+          // here
+
           // Status-specific content
           if (booking.status == BookingStatus.upcoming) ...[
             SizedBox(height: 16.h),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               decoration: BoxDecoration(
-                color: AppColor.orange.withOpacity(0.1),
+                color: AppColor.info.withAlpha(20),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.info_outline,
-                    size: 16.w,
-                    color: AppColor.orange,
-                  ),
+                  Icon(Icons.info_outline, size: 16.w, color: AppColor.orange),
                   SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
                       'Please insert the charging connector within 15 minutes, or the booking will be automatically canceled.',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 14.sp,
                         color: AppColor.orange,
                         fontFamily: Constants.urbanistFont,
                       ),
@@ -255,80 +344,6 @@ class BookingCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          ],
-          
-          // Action buttons
-          if (onView != null || onCancel != null || onBookAgain != null) ...[
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (onView != null)
-                  TextButton(
-                    onPressed: onView,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                        side: BorderSide(color: AppColor.greyScale200),
-                      ),
-                    ),
-                    child: Text(
-                      'View',
-                      style: TextStyle(
-                        color: AppColor.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: Constants.urbanistFont,
-                      ),
-                    ),
-                  ),
-                if (onCancel != null) ...[
-                  SizedBox(width: 12.w),
-                  TextButton(
-                    onPressed: onCancel,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      backgroundColor: AppColor.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
-                    child: Text(
-                      'Cancel Booking',
-                      style: TextStyle(
-                        color: AppColor.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: Constants.urbanistFont,
-                      ),
-                    ),
-                  ),
-                ],
-                if (onBookAgain != null) ...[
-                  SizedBox(width: 12.w),
-                  TextButton(
-                    onPressed: onBookAgain,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      backgroundColor: AppColor.primary_900,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
-                    child: Text(
-                      'Book Again',
-                      style: TextStyle(
-                        color: AppColor.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: Constants.urbanistFont,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
             ),
           ],
         ],
