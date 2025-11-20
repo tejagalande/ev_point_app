@@ -12,12 +12,12 @@ class CancelBookingBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+      padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 15.h, bottom: 15.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(40.r),
-          topRight: Radius.circular(40.r),
+          topLeft: Radius.circular(45.r),
+          topRight: Radius.circular(45.r),
         ),
       ),
       child: Column(
@@ -25,14 +25,14 @@ class CancelBookingBottomSheet extends StatelessWidget {
         children: [
           // Handle bar
           Container(
-            width: 40.w,
+            width: 50.w,
             height: 4.h,
             decoration: BoxDecoration(
               color: AppColor.greyScale300,
-              borderRadius: BorderRadius.circular(2.r),
+              borderRadius: BorderRadius.circular(5.r),
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 15.h),
 
           // Title
           Text(
@@ -40,20 +40,18 @@ class CancelBookingBottomSheet extends StatelessWidget {
             style: TextStyle(
               fontSize: 24.sp,
               fontWeight: FontWeight.bold,
-              color:
-                  AppColor
-                      .error, // Assuming AppColor.error exists, otherwise red
+              color: AppColor.error,
               fontFamily: Constants.urbanistFont,
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 15.h),
 
           Divider(height: 1, color: AppColor.greyScale200),
-          SizedBox(height: 24.h),
+          SizedBox(height: 15.h),
 
           // Message
           Text(
-            'Are you sure you want to cancel the\nbooking?',
+            'Are you sure you want to cancel the booking?',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.sp,
@@ -74,8 +72,9 @@ class CancelBookingBottomSheet extends StatelessWidget {
                   buttonColor: AppColor.primary_100, // Light green
                   textColor: AppColor.primary_900, // Dark green
                   fontSize: 16.sp,
+                  boldText: true,
                   borderRadius: 30.r,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -88,9 +87,12 @@ class CancelBookingBottomSheet extends StatelessWidget {
                   title: "Yes, Cancel",
                   buttonColor: AppColor.primary_900, // Green
                   textColor: Colors.white,
+                  
+                  isShadow: true,
+                  boldText: true,
                   fontSize: 16.sp,
                   borderRadius: 30.r,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                 ),
               ),
             ],
