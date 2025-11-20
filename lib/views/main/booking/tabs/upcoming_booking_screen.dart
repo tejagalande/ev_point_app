@@ -1,3 +1,5 @@
+import 'package:ev_point/routes/app_routes.dart';
+import 'package:ev_point/views/main/booking/charging_process_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -86,36 +88,39 @@ class _UpcomingBookingsScreenState extends State<UpcomingBookingsScreen> {
                     itemCount: upcomingBookings.length,
                     itemBuilder: (context, index) {
                       final booking = upcomingBookings[index];
-                      return BookingCard(
-                        booking: booking,
-                        tabIndex: bookingProvider.selectedTabIndex,
-                        onView: () {
-                          // Navigate to booking details
-                        },
-                        onCancel: () {
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            builder:
-                                (context) => CancelBookingBottomSheet(
-                                  onCancel: () {
-                                    Navigator.pop(context);
-                                    
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   SnackBar(
-                                    //     content: Text(
-                                    //       'Booking canceled successfully',
-                                    //       style: TextStyle(
-                                    //         fontFamily: Constants.urbanistFont,
-                                    //       ),
-                                    //     ),
-                                    //     backgroundColor: AppColor.green,
-                                    //   ),
-                                    // );
-                                  },
-                                ),
-                          );
-                        },
+                      return InkWell(
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.chargingProcessRoute),
+                        child: BookingCard(
+                          booking: booking,
+                          tabIndex: bookingProvider.selectedTabIndex,
+                          onView: () {
+                            // Navigate to booking details
+                          },
+                          onCancel: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder:
+                                  (context) => CancelBookingBottomSheet(
+                                    onCancel: () {
+                                      Navigator.pop(context);
+                                      
+                                      // ScaffoldMessenger.of(context).showSnackBar(
+                                      //   SnackBar(
+                                      //     content: Text(
+                                      //       'Booking canceled successfully',
+                                      //       style: TextStyle(
+                                      //         fontFamily: Constants.urbanistFont,
+                                      //       ),
+                                      //     ),
+                                      //     backgroundColor: AppColor.green,
+                                      //   ),
+                                      // );
+                                    },
+                                  ),
+                            );
+                          },
+                        ),
                       );
                     },
                   ),

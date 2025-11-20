@@ -27,5 +27,6 @@ class AppRoutes {
   static const String reviewSummaryRoute = '/reviewSummary' ;
   static const String savedStationRoute = '/savedStation' ;
   static const String cancelBookingRoute = '/cancelBooking' ;
+  static const String chargingProcessRoute = '/chargingProcess' ;
     
 }

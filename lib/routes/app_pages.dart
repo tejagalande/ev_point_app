@@ -5,6 +5,7 @@ import 'package:ev_point/views/book/book_station_screen.dart';
 import 'package:ev_point/views/book/payment_method_screen.dart';
 import 'package:ev_point/views/book/review_summary_screen.dart';
 import 'package:ev_point/views/book/vehicle_list_screen.dart';
+import 'package:ev_point/views/main/booking/charging_process_screen.dart';
 import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
 import 'package:ev_point/views/onboard/splash_screen.dart';
@@ -40,5 +41,6 @@ class AppPages {
       AppRoutes.reviewSummaryRoute :(context) => ReviewSummaryScreen(),
     AppRoutes.savedStationRoute :(context) => SavedStationsScreen()  ,
     AppRoutes.cancelBookingRoute :(context) => CancelBookingScreen()  ,
+    AppRoutes.chargingProcessRoute :(context) => ChargingProcessScreen()
   };
 }
