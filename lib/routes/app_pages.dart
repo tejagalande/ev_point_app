@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import '../views/auth/otp_screen.dart';
 import '../views/auth/signup_screen.dart';
 import '../views/book/charger_list_screen.dart';
+import '../views/main/booking/cancel_booking_screen.dart';
 
 class AppPages {
 
@@ -37,6 +38,7 @@ class AppPages {
     AppRoutes.bookStationRoute :(context) => BookStationScreen(),
     AppRoutes.paymentMethodRoute :(context) => PaymentMethodScreen(),
       AppRoutes.reviewSummaryRoute :(context) => ReviewSummaryScreen(),
-    AppRoutes.savedStationRoute :(context) => SavedStationsScreen()  
+    AppRoutes.savedStationRoute :(context) => SavedStationsScreen()  ,
+    AppRoutes.cancelBookingRoute :(context) => CancelBookingScreen()  ,
   };
 }

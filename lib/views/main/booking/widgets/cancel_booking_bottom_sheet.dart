@@ -1,3 +1,4 @@
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../utils/theme/app_color.dart';
@@ -81,7 +82,7 @@ class CancelBookingBottomSheet extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   onTapCallback: () {
-                    Navigator.pop(context); // Close sheet
+                    Navigator.pushNamed(context, AppRoutes.cancelBookingRoute);
                     onCancel(); // Trigger cancellation
                   },
                   title: "Yes, Cancel",
