@@ -10,7 +10,9 @@ Future<void> customDialogBox({
   required String title,
   required String subTitle,
   required Widget child,
-  TextAlign? subTitleTextAlign  }) async {
+  double? imageHeight,
+  TextAlign? subTitleTextAlign,
+  TextAlign? titleTextAlign,  }) async {
   return await showDialog(
     context: context,
     barrierDismissible: false,
@@ -22,17 +24,19 @@ Future<void> customDialogBox({
           padding:  EdgeInsets.all(20.0.r),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Image.asset(
                 image,
-                height: 200.h,
+                height: imageHeight ?? 200.h,
               ),
               SizedBox(height: 30.h),
               Text(
+                textAlign: subTitleTextAlign,
                 title,
                 style: TextStyle(
                   fontFamily: Constants.urbanistFont,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.bold,
                   fontSize: 24.sp,
                   color: AppColor.primary_900,
                 ),

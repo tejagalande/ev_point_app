@@ -87,7 +87,6 @@ class _UpcomingBookingsScreenState extends State<UpcomingBookingsScreen> {
                     itemBuilder: (context, index) {
                       final booking = upcomingBookings[index];
                       return BookingCard(
-                        
                         booking: booking,
                         tabIndex: bookingProvider.selectedTabIndex,
                         onView: () {
@@ -100,18 +99,19 @@ class _UpcomingBookingsScreenState extends State<UpcomingBookingsScreen> {
                             builder:
                                 (context) => CancelBookingBottomSheet(
                                   onCancel: () {
-                                    bookingProvider.cancelBooking(booking.id);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Booking canceled successfully',
-                                          style: TextStyle(
-                                            fontFamily: Constants.urbanistFont,
-                                          ),
-                                        ),
-                                        backgroundColor: AppColor.green,
-                                      ),
-                                    );
+                                    Navigator.pop(context);
+                                    
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: Text(
+                                    //       'Booking canceled successfully',
+                                    //       style: TextStyle(
+                                    //         fontFamily: Constants.urbanistFont,
+                                    //       ),
+                                    //     ),
+                                    //     backgroundColor: AppColor.green,
+                                    //   ),
+                                    // );
                                   },
                                 ),
                           );

@@ -15,7 +15,7 @@ class CancelBookingBottomSheet extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 15.h, bottom: 15.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColor.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(45.r),
           topRight: Radius.circular(45.r),
@@ -82,8 +82,10 @@ class CancelBookingBottomSheet extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   onTapCallback: () {
-                    Navigator.pushNamed(context, AppRoutes.cancelBookingRoute);
+                    
+
                     onCancel(); // Trigger cancellation
+                    Navigator.pushNamed(context, AppRoutes.cancelBookingRoute);
                   },
                   title: "Yes, Cancel",
                   buttonColor: AppColor.primary_900, // Green

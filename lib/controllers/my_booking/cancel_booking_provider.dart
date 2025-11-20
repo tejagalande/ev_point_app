@@ -1,4 +1,9 @@
+import 'package:ev_point/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../utils/theme/app_color.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/dialogbox/custom_dialogbox.dart';
 
 class CancelBookingProvider extends ChangeNotifier {
   String? _selectedReason;
@@ -25,13 +30,28 @@ class CancelBookingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void submitCancellation(BuildContext context) {
+  void submitCancellation(BuildContext context) async{
     if (_selectedReason != null) {
-      // Logic to submit cancellation
-      // For now, just pop the screen
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Booking cancelled successfully")),
+      await customDialogBox(
+        context: context,
+        image: "${Constants.imagePath}successful_cancelation.png",
+        title: "Successful Cancellation!",
+        subTitle: "Your booking has been successfully cancelled.",
+        subTitleTextAlign: TextAlign.center,
+        titleTextAlign: TextAlign.center,
+        imageHeight: 150.h,
+        child: CustomButton(
+          onTapCallback: () {
+            Navigator.pop(context); // Close dialog
+            Navigator.pop(context); // Go back to previous screen
+          },
+          title: "OK",
+          buttonColor: AppColor.primary_900,
+          textColor: AppColor.white,
+          fontSize: 16.sp,
+          borderRadius: 35.r,
+          padding: EdgeInsets.symmetric(vertical: 16.h),
+        ),
       );
     } else {
       ScaffoldMessenger.of(

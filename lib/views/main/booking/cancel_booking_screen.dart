@@ -18,6 +18,7 @@ class CancelBookingScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColor.white,
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColor.greyScale900),
             onPressed: () => Navigator.pop(context),
@@ -32,98 +33,102 @@ class CancelBookingScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Consumer<CancelBookingProvider>(
+        bottomNavigationBar: Consumer<CancelBookingProvider>(
           builder: (context, provider, child) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 16.h,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Choose the reason for your cancellation:',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColor.greyScale900,
-                            fontFamily: Constants.urbanistFont,
-                          ),
-                        ),
-                        SizedBox(height: 24.h),
-                        ...provider.reasons.map((reason) {
-                          final isSelected = provider.selectedReason == reason;
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 16.h),
-                            child: GestureDetector(
-                              onTap: () => provider.selectReason(reason),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 24.w,
-                                    height: 24.w,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color:
-                                            isSelected
-                                                ? AppColor.primary_900
-                                                : AppColor.primary_900,
-                                        width: 2.w,
-                                      ),
-                                    ),
-                                    child:
-                                        isSelected
-                                            ? Center(
-                                              child: Container(
-                                                width: 12.w,
-                                                height: 12.w,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: AppColor.primary_900,
-                                                ),
-                                              ),
-                                            )
-                                            : null,
-                                  ),
-                                  SizedBox(width: 16.w),
-                                  Expanded(
-                                    child: Text(
-                                      reason,
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColor.greyScale900,
-                                        fontFamily: Constants.urbanistFont,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(24.w),
-                  child: CustomButton(
-                    onTapCallback: () => provider.submitCancellation(context),
-                    title: "Submit",
-                    buttonColor: AppColor.primary_900,
-                    textColor: Colors.white,
-                    fontSize: 16.sp,
-                    borderRadius: 30.r,
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
-                  ),
+                Divider(thickness: 0.5,),
+                CustomButton( 
+                  margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  onTapCallback: () => provider.submitCancellation(context),
+                  title: "Submit",
+                  buttonColor: AppColor.primary_900,
+                  textColor: AppColor.white,
+                  fontSize: 16.sp,
+                  borderRadius: 35.r,
+                  isShadow: true,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
                 ),
               ],
+            );
+          },
+        ),
+        body: Consumer<CancelBookingProvider>(
+          builder: (context, provider, child) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.w,
+                vertical: 16.h,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Choose the reason for your cancellation:',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.greyScale900,
+                      fontFamily: Constants.urbanistFont,
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  ...provider.reasons.map((reason) {
+                    final isSelected = provider.selectedReason == reason;
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      child: GestureDetector(
+                        onTap: () => provider.selectReason(reason),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 24.w,
+                              height: 24.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color:
+                                      isSelected
+                                          ? AppColor.primary_900
+                                          : AppColor.primary_900,
+                                  width: 2.w,
+                                ),
+                              ),
+                              child:
+                                  isSelected
+                                      ? Center(
+                                        child: Container(
+                                          width: 12.w,
+                                          height: 12.w,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: AppColor.primary_900,
+                                          ),
+                                        ),
+                                      )
+                                      : null,
+                            ),
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: Text(
+                                reason,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColor.greyScale900,
+                                  fontFamily: Constants.urbanistFont,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
             );
           },
         ),
