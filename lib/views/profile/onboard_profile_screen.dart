@@ -101,8 +101,6 @@ class _OnboardProfileState extends State<OnboardProfile> {
                 Text("Complete your profile 📋", style: TextStyles.h3Bold32,),
                 SizedBox(height: 10.0.h,),
                 Text("Don\'t worry, only you can see your personal data. No one else will be able to see it.", style: TextStyles.bodyXlargeRegular18,),
-                
-                
 
                 Padding(
                   padding:  EdgeInsets.symmetric(vertical: 20.0.h),

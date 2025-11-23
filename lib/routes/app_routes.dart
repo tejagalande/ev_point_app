@@ -30,4 +30,5 @@ class AppRoutes {
   static const String myVehicleRoute = '/myVehicle';
   static const String myPaymentMethodsRoute = '/myPaymentMethods';
   static const String addNewPaymentRoute = '/addNewPayment';
+  static const String userProfileRoute = '/userProfile';
 }

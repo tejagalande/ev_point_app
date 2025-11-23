@@ -136,7 +136,9 @@ class _AccountScreenState extends State<AccountScreen> {
         _buildMenuItem(
           icon: "profile_menu.svg",
           title: "Personal Info",
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.userProfileRoute);
+          },
         ),
         _buildMenuItem(
           icon: "security_menu.svg",

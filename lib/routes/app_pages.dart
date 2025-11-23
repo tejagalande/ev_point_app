@@ -6,6 +6,7 @@ import 'package:ev_point/views/book/review_summary_screen.dart';
 import 'package:ev_point/views/book/vehicle_list_screen.dart';
 import 'package:ev_point/views/main/account/menu/add_new_payment_screen.dart';
 import 'package:ev_point/views/main/account/menu/my_payment_methods_screen.dart';
+import 'package:ev_point/views/main/account/menu/personal_info_screen.dart';
 import 'package:ev_point/views/main/booking/charging_process_screen.dart';
 import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
@@ -46,5 +47,6 @@ class AppPages {
     AppRoutes.myVehicleRoute: (context) => MyVehicleScreen(),
     AppRoutes.myPaymentMethodsRoute: (context) => MyPaymentMethodsScreen(),
     AppRoutes.addNewPaymentRoute: (context) => AddNewPaymentScreen(),
+    AppRoutes.userProfileRoute: (context) => PersonalInfoScreen(),
   }; 
 }
