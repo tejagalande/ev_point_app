@@ -1,5 +1,4 @@
 class AppRoutes {
-
   static const String splashRoute = '/splash';
   static const String onboardRoute = '/onboard';
   static const String authOptionRoute = '/auth_option';
@@ -20,13 +19,15 @@ class AppRoutes {
   static const String selfieRoute = '/selfie';
   static const String mainRoute = '/main';
   static const String stationDetailRoute = '/stationDetail';
-  static const String vehicleListRoute = '/vehicleList' ;
-  static const String chargerListRoute = '/chargerList' ;
-  static const String bookStationRoute = '/bookStation' ;
-  static const String paymentMethodRoute = '/paymentMethod' ;
-  static const String reviewSummaryRoute = '/reviewSummary' ;
-  static const String savedStationRoute = '/savedStation' ;
-  static const String cancelBookingRoute = '/cancelBooking' ;
-  static const String chargingProcessRoute = '/chargingProcess' ;
-    
+  static const String vehicleListRoute = '/vehicleList';
+  static const String chargerListRoute = '/chargerList';
+  static const String bookStationRoute = '/bookStation';
+  static const String paymentMethodRoute = '/paymentMethod';
+  static const String reviewSummaryRoute = '/reviewSummary';
+  static const String savedStationRoute = '/savedStation';
+  static const String cancelBookingRoute = '/cancelBooking';
+  static const String chargingProcessRoute = '/chargingProcess';
+  static const String myVehicleRoute = '/myVehicle';
+  static const String myPaymentMethodsRoute = '/myPaymentMethods';
+  static const String addNewPaymentRoute = '/addNewPayment';
 }

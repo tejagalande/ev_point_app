@@ -1,3 +1,4 @@
+import 'package:ev_point/routes/app_routes.dart';
 import 'package:ev_point/utils/constants.dart';
 import 'package:ev_point/utils/theme/app_color.dart';
 import 'package:ev_point/utils/theme/text_styles.dart';
@@ -118,12 +119,16 @@ class _AccountScreenState extends State<AccountScreen> {
         _buildMenuItem(
           icon: "my_vehicle_menu.svg",
           title: "My Vehicle",
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.myVehicleRoute);
+          },
         ),
         _buildMenuItem(
           icon: "card_menu.svg",
           title: "Payment Methods",
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.myPaymentMethodsRoute);
+          },
         ),
         SizedBox(height: 12.h),
         Divider(color: AppColor.greyScale200, thickness: 1),
@@ -233,7 +238,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   // colorFilter: ColorFilter.mode(textColor ?? AppColor.greyScale900, BlendMode.srcIn),
                 )
                 : Icon(Icons.error, color: AppColor.greyScale900), // Fallback
-            
+
             Expanded(
               child: Text(
                 title,

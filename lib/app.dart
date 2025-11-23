@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:ev_point/routes/app_pages.dart';
 import 'package:ev_point/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       splitScreenMode: false,
       builder: (context, child) {
         return MaterialApp(
+          // ignore: deprecated_member_use
+          useInheritedMediaQuery: true,
+          builder: DevicePreview.appBuilder,
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.mainRoute,
           routes: AppPages.routes,

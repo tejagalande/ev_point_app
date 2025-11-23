@@ -1,4 +1,5 @@
 
+import 'package:device_preview/device_preview.dart';
 import 'package:ev_point/app.dart';
 import 'package:ev_point/controllers/home/station_list_provider.dart';
 import 'package:ev_point/controllers/home/station_map_provider.dart';
@@ -69,7 +70,10 @@ void main() async{
           ),
 
       ],
-      child: MyApp(),
+      child: DevicePreview(
+        enabled: false,
+        builder: (context) => MyApp(),
+      )
     )
     );
 }
