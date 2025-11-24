@@ -143,7 +143,9 @@ class _AccountScreenState extends State<AccountScreen> {
         _buildMenuItem(
           icon: "security_menu.svg",
           title: "Security",
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.securityRoute);
+          },
         ),
         _buildMenuItem(
           icon:

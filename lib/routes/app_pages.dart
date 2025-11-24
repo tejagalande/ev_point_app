@@ -7,6 +7,7 @@ import 'package:ev_point/views/book/vehicle_list_screen.dart';
 import 'package:ev_point/views/main/account/menu/add_new_payment_screen.dart';
 import 'package:ev_point/views/main/account/menu/my_payment_methods_screen.dart';
 import 'package:ev_point/views/main/account/menu/personal_info_screen.dart';
+import 'package:ev_point/views/main/account/menu/security_screen.dart';
 import 'package:ev_point/views/main/booking/charging_process_screen.dart';
 import 'package:ev_point/views/main/widget/main_screen.dart';
 import 'package:ev_point/views/onboard/onboard_screen.dart';
@@ -40,7 +41,7 @@ class AppPages {
     AppRoutes.chargerListRoute: (context) => ChargerListScreen(),
     AppRoutes.bookStationRoute: (context) => BookStationScreen(),
     AppRoutes.paymentMethodRoute: (context) => PaymentMethodScreen(),
-    AppRoutes.reviewSummaryRoute  :(context) => ReviewSummaryScreen(),
+    AppRoutes.reviewSummaryRoute: (context) => ReviewSummaryScreen(),
     AppRoutes.savedStationRoute: (context) => SavedStationsScreen(),
     AppRoutes.cancelBookingRoute: (context) => CancelBookingScreen(),
     AppRoutes.chargingProcessRoute: (context) => ChargingProcessScreen(),
@@ -48,5 +49,6 @@ class AppPages {
     AppRoutes.myPaymentMethodsRoute: (context) => MyPaymentMethodsScreen(),
     AppRoutes.addNewPaymentRoute: (context) => AddNewPaymentScreen(),
     AppRoutes.userProfileRoute: (context) => PersonalInfoScreen(),
-  }; 
+    AppRoutes.securityRoute: (context) => const SecurityScreen(),
+  };
 }
