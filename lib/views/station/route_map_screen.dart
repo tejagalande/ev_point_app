@@ -43,7 +43,7 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                   onMapCreated: provider.onMapCreated,
                   markers: provider.markers,
                   polylines: provider.polylines,
-                  myLocationEnabled: true,
+                  myLocationEnabled: !provider.isNavigating,
                   myLocationButtonEnabled: false,
                   zoomControlsEnabled: false,
                 ),
@@ -81,11 +81,7 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                             fontFamily: Constants.urbanistFont,
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color:
-                                Colors
-                                    .black, // Assuming map is light, text should be dark.
-                            // Or if map is behind, maybe we need a background or shadow.
-                            // But usually AppBar is separate. Here I'm putting it on top of map.
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -130,73 +126,121 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                       children: [
                         if (provider.isLoading)
                           Center(child: CircularProgressIndicator())
-                        else
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        else if (provider.hasArrived)
+                          Column(
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Icon(
+                                Icons.check_circle,
+                                color: AppColor.primary_900,
+                                size: 50.sp,
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                "You reached at your destination",
+                                style: TextStyle(
+                                  fontFamily: Constants.urbanistFont,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: 20.h),
+                              CustomButton(
+                                title: "Done",
+                                textColor: AppColor.white,
+                                boldText: true,
+                                borderRadius: 30.r,
+                                buttonColor: AppColor.primary_900,
+                                onTapCallback: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          )
+                        else
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "Distance",
-                                    style: TextStyle(
-                                      fontFamily: Constants.urbanistFont,
-                                      color: AppColor.greyScale700,
-                                      fontSize: 14.sp,
-                                    ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Distance",
+                                        style: TextStyle(
+                                          fontFamily: Constants.urbanistFont,
+                                          color: AppColor.greyScale700,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.h),
+                                      Text(
+                                        provider.distance,
+                                        style: TextStyle(
+                                          fontFamily: Constants.urbanistFont,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.sp,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 5.h),
-                                  Text(
-                                    provider.distance,
-                                    style: TextStyle(
-                                      fontFamily: Constants.urbanistFont,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.sp,
-                                      color: Colors.black,
-                                    ),
+                                  Container(
+                                    height: 40.h,
+                                    width: 1,
+                                    color: AppColor.greyScale200,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Duration",
+                                        style: TextStyle(
+                                          fontFamily: Constants.urbanistFont,
+                                          color: AppColor.greyScale700,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5.h),
+                                      Text(
+                                        provider.duration,
+                                        style: TextStyle(
+                                          fontFamily: Constants.urbanistFont,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.sp,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              Container(
-                                height: 40.h,
-                                width: 1,
-                                color: AppColor.greyScale200,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Duration",
-                                    style: TextStyle(
-                                      fontFamily: Constants.urbanistFont,
-                                      color: AppColor.greyScale700,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5.h),
-                                  Text(
-                                    provider.duration,
-                                    style: TextStyle(
-                                      fontFamily: Constants.urbanistFont,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.sp,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
+                              SizedBox(height: 20.h),
+                              CustomButton(
+                                title:
+                                    provider.isNavigating
+                                        ? "Stop Navigation"
+                                        : "Start",
+                                textColor: AppColor.white,
+                                borderRadius: 30.r,
+                                buttonColor:
+                                    provider.isNavigating
+                                        ? Colors.red
+                                        : AppColor.primary_900,
+                                onTapCallback: () {
+                                  if (provider.isNavigating) {
+                                    provider.stopNavigation();
+                                  } else {
+                                    provider.startNavigation();
+                                  }
+                                },
                               ),
                             ],
                           ),
-                        SizedBox(height: 20.h),
-                        CustomButton(
-                          title: "Start",
-                          textColor: AppColor.white,
-                          borderRadius: 30.r,
-                          buttonColor: AppColor.primary_900,
-                          onTapCallback: () {
-                            // Start navigation or whatever action
-                          },
-                        ),
                       ],
                     ),
                   ),

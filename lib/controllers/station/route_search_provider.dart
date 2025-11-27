@@ -23,6 +23,7 @@ class RouteSearchProvider extends ChangeNotifier {
 
   RouteSearchProvider() {
     _places = FlutterGooglePlacesSdk(_apiKey);
+    getCurrentLocation(isInit: true);
   }
 
   void swapLocations() {
@@ -46,7 +47,7 @@ class RouteSearchProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCurrentLocation() async {
+  Future<void> getCurrentLocation({bool isInit = false}) async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -65,7 +66,11 @@ class RouteSearchProvider extends ChangeNotifier {
         lng: position.longitude,
       );
 
-      if (isSourceFocused) {
+      if (isInit) {
+        sourceLatLng = currentPos;
+        sourceName = "Your Location";
+        // sourceController.text is already "Your Location" by default
+      } else if (isSourceFocused) {
         sourceLatLng = currentPos;
         sourceName = "Your Location";
         sourceController.text = "Your Location";
