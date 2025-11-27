@@ -285,107 +285,7 @@ class _StationMapScreenState extends State<StationMapScreen> {
                     
                     // marker window
                     value.selectedMarker != null ?
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColor.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      margin: EdgeInsets.all(10.r),
-                      padding: EdgeInsets.all(15.r),
-                      child: Column(
-
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // station name, address text
-                          Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    value.selectedMarker!.snippet ,
-                                    style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
-                                  SizedBox( 
-                                    width: screenWidth * 0.6,
-                                    child: Text(
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      listProvider!.stationList?.where((element) => element.id == int.parse(value.selectedMarker!.id) ,).first.address ?? "",
-                                      style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
-                                      ),
-                                  )],
-                              ),
-
-                              const Spacer(),
-
-                              RouteNavigator(),
-                            ],
-                          ),
-
-                          SizedBox(height: 5.h,),
-
-                          // ratings stars
-                          RatingStar(rating: '4.5', ratingCount: '120',),
-
-                          SizedBox(height: 5.h,),
-
-                          // available, KM, duration text and icons
-                          StationData(stationDistanceInKm: '1.6', stationDuration: '5min', stationStatus: 'Available',),
-                          SizedBox(height: 5.h,),
-
-                          const Divider(thickness: 0.5,),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
-                              Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
-                            ],
-                          ),
-
-                          const Divider(thickness: 0.5,),
-
-                          SizedBox(height: 5.h,),
-
-                          Row(
-                            spacing: 20.w,
-                            children: [
-
-                              // view button
-                              Expanded(
-                                child: CustomButton(
-                                  title: "View",
-                                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                                  buttonColor: AppColor.white,
-                                  border: Border.all(color: AppColor.primary_900, width: 2.w),
-                                  borderRadius: 30.r,
-                                  textColor: AppColor.primary_900,
-                                  onTapCallback: () {
-                                    Navigator.pushNamed(context, AppRoutes.stationDetailRoute);
-                                  },
-
-                                  ),
-                              ),
-
-                              // book button
-                              Expanded(
-                                child: CustomButton(
-                                  title: "Book",
-                                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                                  buttonColor: AppColor.primary_900,
-                                  textColor: AppColor.white,
-                                  borderRadius: 30.r,
-                                  onTapCallback: () {
-
-                                  },
-
-                                  ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ) : 
+                    stationCard(value, screenWidth, context) : 
                     SizedBox.shrink()
                   ],
                 ),
@@ -395,6 +295,111 @@ class _StationMapScreenState extends State<StationMapScreen> {
         },
       ),
     );
+  }
+
+  Container stationCard(StationMapProvider value, double screenWidth, BuildContext context) {
+    return Container(
+                    decoration: BoxDecoration(
+                      color: AppColor.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    margin: EdgeInsets.all(10.r),
+                    padding: EdgeInsets.all(15.r),
+                    child: Column(
+
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // station name, address text
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  value.selectedMarker!.snippet ,
+                                  style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 20.sp, fontWeight: FontWeight.bold),),
+                                SizedBox( 
+                                  width: screenWidth * 0.6,
+                                  child: Text(
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    listProvider!.stationList?.where((element) => element.id == int.parse(value.selectedMarker!.id) ,).first.address ?? "",
+                                    style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp,color: AppColor.greyScale700 ,fontWeight: FontWeight.w500),
+                                    ),
+                                )],
+                            ),
+
+                            const Spacer(),
+
+                            // route navigator
+                            RouteNavigator(),
+                          ],
+                        ),
+
+                        SizedBox(height: 5.h,),
+
+                        // ratings stars
+                        RatingStar(rating: '4.5', ratingCount: '120',),
+
+                        SizedBox(height: 5.h,),
+
+                        // available, KM, duration text and icons
+                        StationData(stationDistanceInKm: '1.6', stationDuration: '5min', stationStatus: 'Available',),
+                        SizedBox(height: 5.h,),
+
+                        const Divider(thickness: 0.5,),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text("6 chargers", style: TextStyle(fontFamily: Constants.urbanistFont, fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColor.primary_900),),
+                            Icon(Icons.chevron_right_rounded, color: AppColor.primary_900,)
+                          ],
+                        ),
+
+                        const Divider(thickness: 0.5,),
+
+                        SizedBox(height: 5.h,),
+
+                        Row(
+                          spacing: 20.w,
+                          children: [
+
+                            // view button
+                            Expanded(
+                              child: CustomButton(
+                                title: "View",
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                buttonColor: AppColor.white,
+                                border: Border.all(color: AppColor.primary_900, width: 2.w),
+                                borderRadius: 30.r,
+                                textColor: AppColor.primary_900,
+                                onTapCallback: () {
+                                  Navigator.pushNamed(context, AppRoutes.stationDetailRoute);
+                                },
+
+                                ),
+                            ),
+
+                            // book button
+                            Expanded(
+                              child: CustomButton(
+                                title: "Book",
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
+                                buttonColor: AppColor.primary_900,
+                                textColor: AppColor.white,
+                                borderRadius: 30.r,
+                                onTapCallback: () {
+
+                                },
+
+                                ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
   }
 
   // @override

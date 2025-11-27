@@ -32,4 +32,5 @@ class AppRoutes {
   static const String addNewPaymentRoute = '/addNewPayment';
   static const String userProfileRoute = '/userProfile';
   static const String securityRoute = '/security';
+  static const String routeSearchRoute = '/route_search';
 }

@@ -17,6 +17,7 @@ import 'package:ev_point/views/profile/onboard_profile_screen.dart';
 import 'package:ev_point/views/profile/selfieCamera_screen.dart';
 import 'package:ev_point/views/save_station/saved_stations_screen.dart';
 import 'package:ev_point/views/station/station_detail_screen.dart';
+import 'package:ev_point/views/station/route_search_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../views/auth/otp_screen.dart';
@@ -50,5 +51,6 @@ class AppPages {
     AppRoutes.addNewPaymentRoute: (context) => AddNewPaymentScreen(),
     AppRoutes.userProfileRoute: (context) => PersonalInfoScreen(),
     AppRoutes.securityRoute: (context) => const SecurityScreen(),
+    AppRoutes.routeSearchRoute: (context) => const RouteSearchScreen(),
   };
 }

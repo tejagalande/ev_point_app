@@ -213,7 +213,12 @@ class _StationDetailScreenState extends State<StationDetailScreen>
                             buttonColor: AppColor.white,
                             textColor: AppColor.primary_900,
                             borderRadius: 30.r,
-                            onTapCallback: () {},
+                            onTapCallback: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.routeSearchRoute,
+                              );
+                            },
                           ),
                         ),
                       ],
