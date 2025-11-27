@@ -48,6 +48,19 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                   zoomControlsEnabled: false,
                 ),
 
+                 Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    gradient: Constants.mapSearchLinearGradient,
+                  ),
+                  ),
+                ),
+
                 // Custom AppBar
                 Positioned(
                   top: 50.h,
@@ -81,7 +94,7 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                             fontFamily: Constants.urbanistFont,
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: AppColor.greyScale900,
                           ),
                         ),
                       ),
@@ -102,6 +115,8 @@ class _RouteMapScreenState extends State<RouteMapScreen> {
                     child: Icon(Icons.my_location, color: AppColor.primary_900),
                   ),
                 ),
+
+               
 
                 // Bottom Card
                 Positioned(
